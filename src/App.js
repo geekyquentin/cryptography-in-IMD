@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react"
+import { CommandInput, CommandExecuter } from "./components"
+
+import "./App.css"
 
 function App() {
+  const [command, setCommand] = useState("")
+
+  const executeCommand = () => {
+    console.log("Executing command:", command)
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Command Interface</h1>
+      <CommandInput onExecuteCommand={setCommand} />
+      <CommandExecuter command={command} onExecute={executeCommand} />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
