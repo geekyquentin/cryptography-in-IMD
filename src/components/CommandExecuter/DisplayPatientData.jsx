@@ -1,4 +1,4 @@
-import "./CommandExecuter.scss"
+import "./DisplayPatientData.scss"
 
 export default function CommandExecutor(props) {
   const {
@@ -23,7 +23,7 @@ export default function CommandExecutor(props) {
         <div className="statBox__content__col">
           <div className="statBox__content__item">
             <h3>
-              Basic heart rate [in bpm]: <span>{minHeartRate}</span>
+              Basic heart rate: <span>{minHeartRate}</span>
             </h3>
           </div>
           <div className="statBox__content__item">
@@ -73,18 +73,22 @@ export default function CommandExecutor(props) {
             <h3>Beeper control: {beeperControl ? "ENABLED" : "DISABLED"}</h3>
           </div>
           <div className="statBox__content__item">
-            <h3>Pulse amplitude[P.A.] setting</h3>
+            <h3>Pulse amplitude setting</h3>
             <p>
               Atrium: {pulseAmp.atrium} <br />
               Left ventricle: {pulseAmp.leftVentricle} <br />
               Right ventricle: {pulseAmp.rightVentricle}
             </p>
-            <h3>Pulse width[P.W.] setting</h3>
+          </div>
+          <div className="statBox__content__item">
+            <h3>Pulse width setting</h3>
             <p>
               Atrium: {pulseWidth.atrium} <br />
               Left ventricle: {pulseWidth.leftVentricle} <br />
               Right ventricle: {pulseWidth.rightVentricle}
             </p>
+          </div>
+          <div className="statBox__content__item">
             <h3>Shocks per episode: {shocksPerEpisode}</h3>
           </div>
         </div>
