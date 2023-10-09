@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { CommandInput, CommandExecuter } from "./components"
+import { CommandInput } from "./components"
 
 import "./App.css"
 
@@ -12,9 +12,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Command Interface</h1>
       <CommandInput onExecuteCommand={setCommand} />
-      <CommandExecuter command={command} onExecute={executeCommand} />
     </div>
   )
 }

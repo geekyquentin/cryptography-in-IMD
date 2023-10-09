@@ -1,0 +1,12 @@
+.cmdInput {
+  text-align: center;
+  margin: auto;
+
+  &__input {
+    width: 100%;
+  }
+
+  &__verdict {
+    text-align: left;
+  }
+}
