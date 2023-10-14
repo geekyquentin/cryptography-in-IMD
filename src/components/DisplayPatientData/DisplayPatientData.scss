@@ -1,3 +1,5 @@
+@import "../../styles/variables.scss";
+
 .statBox {
   display: flex;
   flex-direction: column;
@@ -5,10 +7,10 @@
   width: 100%;
 
   margin: 2rem 0 2rem 0;
-  background-color: #e0e8ff;
+  background-color: $light-blue-bg;
   padding: 2rem;
   border-radius: 1rem;
-  border: 2px solid #c5c5c5;
+  border: 2px solid $border-color-biege;
 
   & > h2 {
     text-align: center;

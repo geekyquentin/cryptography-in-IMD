@@ -1,20 +1,24 @@
+import { useStateContext } from "../../StateContext"
+
 import "./DisplayPatientData.scss"
 
-export default function CommandExecutor(props) {
+export default function DisplayPatientData() {
   const {
-    minHeartRate,
-    ventricularRates,
-    TCDetection,
-    shockEnergy,
-    enableTCDetection,
-    upperHeartRate,
-    nightHeartRate,
-    minHeartRateAfterShock,
-    beeperControl,
-    pulseAmp,
-    pulseWidth,
-    shocksPerEpisode,
-  } = props
+    state: {
+      minHeartRate,
+      upperHeartRate,
+      nightHeartRate,
+      minHeartRateAfterShock,
+      beeperControl,
+      pulseAmp,
+      pulseWidth,
+      shocksPerEpisode,
+      ventricularRates,
+      tcDetection,
+      shockEnergy,
+      enableTCDetection,
+    },
+  } = useStateContext()
 
   return (
     <div className="statBox">
@@ -37,10 +41,10 @@ export default function CommandExecutor(props) {
           <div className="statBox__content__item">
             <h3>Tachycardia detection interval</h3>
             <p>
-              VT1 detection counter: {TCDetection.vt1} <br />
-              VT2 detection counter: {TCDetection.vt2} <br />
-              VT1 re-detection counter: {TCDetection.vt1Re} <br />
-              VF detection counter: {TCDetection.vf}
+              VT1 detection counter: {tcDetection.vt1} <br />
+              VT2 detection counter: {tcDetection.vt2} <br />
+              VT1 re-detection counter: {tcDetection.vt1Re} <br />
+              VF detection counter: {tcDetection.vf}
             </p>
           </div>
           <div className="statBox__content__item">

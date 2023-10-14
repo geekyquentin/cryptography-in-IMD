@@ -1,0 +1,9 @@
+{
+  "editor.useTabStops": false,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.wordWrap": "off",
+  "editor.wordWrapColumn": 80,
+  "editor.formatOnSave": true,
+}
