@@ -2,7 +2,6 @@
 
 input {
   padding: 0.5rem;
-  margin: 0.5rem 0;
   border: 2px solid $border-color-biege;
   border-radius: 4px;
   box-sizing: border-box;
@@ -12,4 +11,8 @@ input {
     border-color: $border-color-focus;
     transition: $transition;
   }
+}
+
+.comp-heading {
+  margin: 1.5rem 0 0.5rem 0;
 }

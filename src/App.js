@@ -1,11 +1,11 @@
-import { CommandInput, DisplayPatientData, DefineParameters } from "./components"
+import { CommandInput, DisplayPatientData, DefineParameters, RandomNumberStream } from "./components"
 import { StateProvider } from './StateContext'
 import { toastOptions } from "./data"
 
 import { ToastContainer, Slide } from "react-toastify"
+
 import "react-toastify/dist/ReactToastify.css"
 import "./styles/Toast.scss"
-
 import "./styles/Global.scss"
 import "./App.css"
 
@@ -13,10 +13,12 @@ function App() {
   return (
     <>
       <div className="App">
+        <h1>Data manipulation simulation</h1>
         <StateProvider>
-          <CommandInput />
           <DisplayPatientData />
-          <DefineParameters />
+          <CommandInput />
+          <RandomNumberStream />
+          {/* <DefineParameters /> */}
         </StateProvider>
       </div>
 

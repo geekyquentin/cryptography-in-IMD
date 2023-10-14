@@ -1,0 +1,23 @@
+.random-number-stream {
+  width: 100%;
+}
+
+.number-stream {
+  position: relative;
+  height: 30px;
+  overflow: hidden;
+}
+
+.number {
+  position: absolute;
+  animation: moveLeft 15s linear infinite;
+}
+
+@keyframes moveLeft {
+  from {
+    left: 0;
+  }
+  to {
+    left: 100%;
+  }
+}

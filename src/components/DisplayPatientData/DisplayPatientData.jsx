@@ -21,16 +21,16 @@ export default function DisplayPatientData() {
   } = useStateContext()
 
   return (
-    <div className="statBox">
-      <h2>Patient and ICD data</h2>
-      <div className="statBox__content">
-        <div className="statBox__content__col">
-          <div className="statBox__content__item">
+    <div className="stats">
+      <h2 className="comp-heading">Patient and ICD data</h2>
+      <div className="stat-box">
+        <div className="stat-box__col">
+          <div className="stat-box__item">
             <h3>
               Basic heart rate: <span>{minHeartRate}</span>
             </h3>
           </div>
-          <div className="statBox__content__item">
+          <div className="stat-box__item">
             <h3>Tachycardia zone detection</h3>
             <p>
               VT1 rate/interval: {ventricularRates.vt1} <br />
@@ -38,7 +38,7 @@ export default function DisplayPatientData() {
               VF rate/interval: {ventricularRates.vf}
             </p>
           </div>
-          <div className="statBox__content__item">
+          <div className="stat-box__item">
             <h3>Tachycardia detection interval</h3>
             <p>
               VT1 detection counter: {tcDetection.vt1} <br />
@@ -47,7 +47,7 @@ export default function DisplayPatientData() {
               VF detection counter: {tcDetection.vf}
             </p>
           </div>
-          <div className="statBox__content__item">
+          <div className="stat-box__item">
             <h3>Shock dose release</h3>
             <p>
               VF first shock: {shockEnergy.first} <br />
@@ -55,7 +55,7 @@ export default function DisplayPatientData() {
               3-nth shock: {shockEnergy.nth}
             </p>
           </div>
-          <div className="statBox__content__item">
+          <div className="stat-box__item">
             <h3>
               Tachycardia detection:{" "}
               {enableTCDetection ? "ENABLED" : "DISABLED"}
@@ -63,20 +63,20 @@ export default function DisplayPatientData() {
           </div>
         </div>
 
-        <div className="statBox__content__row">
-          <div className="statBox__content__item">
+        <div className="stat-box__col">
+          <div className="stat-box__item">
             <h3>Upper heart rate: {upperHeartRate}</h3>
           </div>
-          <div className="statBox__content__item">
+          <div className="stat-box__item">
             <h3>Night heart rate: {nightHeartRate}</h3>
           </div>
-          <div className="statBox__content__item">
+          <div className="stat-box__item">
             <h3>Post shock basic rate: {minHeartRateAfterShock}</h3>
           </div>
-          <div className="statBox__content__item">
+          <div className="stat-box__item">
             <h3>Beeper control: {beeperControl ? "ENABLED" : "DISABLED"}</h3>
           </div>
-          <div className="statBox__content__item">
+          <div className="stat-box__item">
             <h3>Pulse amplitude setting</h3>
             <p>
               Atrium: {pulseAmp.atrium} <br />
@@ -84,7 +84,7 @@ export default function DisplayPatientData() {
               Right ventricle: {pulseAmp.rightVentricle}
             </p>
           </div>
-          <div className="statBox__content__item">
+          <div className="stat-box__item">
             <h3>Pulse width setting</h3>
             <p>
               Atrium: {pulseWidth.atrium} <br />
@@ -92,7 +92,7 @@ export default function DisplayPatientData() {
               Right ventricle: {pulseWidth.rightVentricle}
             </p>
           </div>
-          <div className="statBox__content__item">
+          <div className="stat-box__item">
             <h3>Shocks per episode: {shocksPerEpisode}</h3>
           </div>
         </div>

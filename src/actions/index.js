@@ -2,7 +2,13 @@ import * as actionTypes from "../data/actionTypes"
 import { toast } from "react-toastify"
 import { toastOptions } from "../data"
 
-export const executeCommand = (dispatch, action, parameter, value) => {
+export const executeCommand = (dispatch, command) => {
+  const [action, parameter, value] = command.split(" ")
+  if (isNaN(value) || !action || !parameter || !value) {
+    toast.error("Invalid command", toastOptions)
+    return
+  }
+
   switch (action) {
     case "SET":
       switch (parameter) {

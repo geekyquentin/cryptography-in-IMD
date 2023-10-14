@@ -3,9 +3,10 @@ import "./DefineParameters.scss"
 
 const DefineParameters = () => {
   return (
-    <div className="defineParams">
+    <div className="define-params">
+      <h2 className="comp-heading">Parameters definition</h2>
       {defs.map((def, i) => (
-        <div className="defineParams__item" key={i}>
+        <div className="define-params__item" key={i}>
           <p>
             <b>{def.name}:</b> {def.description}
           </p>
