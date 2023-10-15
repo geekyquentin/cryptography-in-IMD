@@ -4,6 +4,7 @@ import * as actionTypes from "./data/actionTypes"
 const StateContext = createContext()
 
 const initialState = {
+  heartBeats: [],
   minHeartRate: 0,
   ventricularRates: {
     vt1: 0,
@@ -41,6 +42,8 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
+    case actionTypes.UPDATE_HEART_BEATS:
+      return { ...state, heartBeats: action.payload }
     case actionTypes.UPDATE_MIN_HEART_RATE:
       return { ...state, minHeartRate: action.payload }
     case actionTypes.UPDATE_VENTRICULAR_RATES:

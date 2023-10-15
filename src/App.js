@@ -13,7 +13,7 @@ function App() {
   return (
     <>
       <div className="App">
-        <h1>Data manipulation simulation</h1>
+        <h1 className="App__title">Data manipulation simulation</h1>
         <StateProvider>
           <DisplayPatientData />
           <CommandInput />

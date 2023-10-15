@@ -7,7 +7,7 @@ const toastOptions = {
   pauseOnHover: true,
   draggable: false,
   progress: undefined,
-  theme: "dark",
+  theme: "dark"
 }
 
 export default toastOptions

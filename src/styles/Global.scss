@@ -13,6 +13,21 @@ input {
   }
 }
 
+button {
+  padding: 0.5rem;
+  border: 2px solid $border-color-biege;
+  border-radius: 4px;
+  background-color: $bg-color-biege;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: $border-color-focus;
+    transition: $transition;
+  }
+}
+
 .comp-heading {
   margin: 1.5rem 0 0.5rem 0;
 }
