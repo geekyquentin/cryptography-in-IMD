@@ -1,4 +1,8 @@
 const defaultParams = {
+  "randomRange": {
+    "min": 60,
+    "max": 200
+  },
   "minHeartRate": {
     "min": 70,
     "max": 120

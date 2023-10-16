@@ -1,10 +1,66 @@
+import * as discriminators from "./discriminators"
 import * as actionTypes from "../data/actionTypes"
 import { toast } from "react-toastify"
 import { toastOptions, defaultParams } from "../data"
 
-export const rhythmID = (heartRates) => {
-  // D1
-  toast.success("Rhythm ID: D1", toastOptions)
+export const rhythmID = (state, heartRates, vRate, aRate) => {
+  const { vt1, vf } = state.ventricularRates
+  const { first, second, nth } = state.shockEnergy
+
+  if (vt1 === 0 || vf === 0 || first === 0 || second === 0 || nth === 0) {
+    toast.error("Please set all the required parameters first", toastOptions)
+    return
+  }
+
+  if (discriminators.D1(state, heartRates)) {
+    if (discriminators.D2(state, heartRates)) {
+      // shock required
+    } else {
+      if (discriminators.D3(state, heartRates)) {
+        if (discriminators.D4(state, heartRates)) {
+          if (discriminators.D5(state, heartRates)) {
+            // shock required
+          } else {
+            if (discriminators.D6(state, heartRates)) {
+              toast.success("No shock advised", toastOptions)
+            } else {
+              if (discriminators.D7(state, heartRates)) {
+                toast.success("No shock advised", toastOptions)
+              } else {
+                // shock required
+              }
+            }
+          }
+        } else {
+          toast.success("No shock advised", toastOptions)
+        }
+      } else {
+        toast.success("No shock advised", toastOptions)
+      }
+    }
+  } else {
+    if (discriminators.D3(state, heartRates)) {
+      if (discriminators.D4(state, heartRates)) {
+        if (discriminators.D5(state, heartRates)) {
+          // shock required
+        } else {
+          if (discriminators.D6(state, heartRates)) {
+            toast.success("No shock advised", toastOptions)
+          } else {
+            if (discriminators.D7(state, heartRates)) {
+              toast.success("No shock advised", toastOptions)
+            } else {
+              // shock required
+            }
+          }
+        }
+      } else {
+        toast.success("No shock advised", toastOptions)
+      }
+    } else {
+      toast.success("No shock advised", toastOptions)
+    }
+  }
 }
 
 export const executeCommand = (state, dispatch, command) => {
@@ -36,7 +92,7 @@ export const executeCommand = (state, dispatch, command) => {
           break
 
         case "VT2GT":
-          if (state.ventricularRates.vt2 === 0) {
+          if (state.ventricularRates.vt1 === 0) {
             toast.error("VT1 must be set first", toastOptions)
             return
           }

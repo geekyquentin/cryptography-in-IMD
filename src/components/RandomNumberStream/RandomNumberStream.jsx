@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react"
+import { useStateContext } from "../../StateContext"
+import { defaultParams } from "../../data"
 import "./RandomNumberStream.scss"
 import { rhythmID } from "../../actions"
 
 export default function RandomNumberStream() {
+  const { state } = useStateContext()
+
   const [isRunning, setIsRunning] = useState(true)
   const [intervalTime, setIntervalTime] = useState(2500)
   const [stream, setStream] = useState([])
@@ -15,10 +19,9 @@ export default function RandomNumberStream() {
 
     if (isRunning) {
       interval = setInterval(() => {
-        const randomNumber = Math.floor(Math.random() * 100)
         setStream((prevStream) => [
           ...prevStream,
-          { number: randomNumber, position: -100, id: Date.now() },
+          { number: getRandomNumber(), position: -100, id: Date.now() },
         ])
       }, intervalTime)
 
@@ -46,14 +49,24 @@ export default function RandomNumberStream() {
     setIsRunning((prevIsRunning) => !prevIsRunning)
   }
 
+  const getRandomNumber = () => {
+    const { min, max } = defaultParams.randomRange
+    return Math.floor(Math.random() * (max - min + 1) + min)
+  }
+
   useEffect(() => {
     if (stream.length <= 10) {
       return
     }
 
     setStream((prevStream) => prevStream.slice(1))
-    rhythmID(stream.map((item) => item.number))
-  }, [stream])
+    rhythmID(
+      state,
+      stream.map((item) => item.number),
+      getRandomNumber(),
+      getRandomNumber()
+    )
+  }, [stream, state])
 
   return (
     <div className="random-number-stream">
