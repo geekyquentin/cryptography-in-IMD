@@ -2,6 +2,10 @@
   width: 100%;
 }
 
+.toggle-stream-btn {
+  margin-left: 1rem;
+}
+
 .number-stream {
   position: relative;
   width: 100%;
@@ -13,7 +17,7 @@
 
 .number {
   position: absolute;
-  animation: moveLeft 20s linear infinite;
+  animation: moveLeft 30s linear infinite;
 }
 
 @keyframes moveLeft {

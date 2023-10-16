@@ -4,12 +4,12 @@ import { executeCommand } from "../../actions"
 import "./CommandInput.scss"
 
 export default function CommandInput() {
-  const { dispatch } = useStateContext()
+  const { state, dispatch } = useStateContext()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     const command = e.target[0].value
-    executeCommand(dispatch, command)
+    executeCommand(state, dispatch, command)
     e.target[0].value = ""
   }
 

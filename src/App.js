@@ -16,8 +16,8 @@ function App() {
         <h1 className="App__title">Data manipulation simulation</h1>
         <StateProvider>
           <DisplayPatientData />
-          <CommandInput />
           <RandomNumberStream />
+          <CommandInput />
           {/* <DefineParameters /> */}
         </StateProvider>
       </div>

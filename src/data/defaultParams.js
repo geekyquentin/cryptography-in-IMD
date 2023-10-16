@@ -3,6 +3,18 @@ const defaultParams = {
     "min": 70,
     "max": 120
   },
+  "vtDetection": {
+    "min": 120,
+    "max": 180
+  },
+  "vt2Detection": {
+    "min": 160,
+    "max": 210
+  },
+  "vfDetection": {
+    "min": 140,
+    "max": 190
+  },
   "minCounter": 10,
   "shockDose": {
     "min": 10,
