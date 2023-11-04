@@ -3,23 +3,29 @@ import * as actionTypes from "../data/actionTypes"
 import { toast } from "react-toastify"
 import { toastOptions, defaultParams } from "../data"
 
-export const rhythmID = (state, heartRates, vRate, aRate) => {
-  const { vt1, vf } = state.ventricularRates
+export const deliverShockTreatment = (state) => {
   const { first, second, nth } = state.shockEnergy
 
-  if (vt1 === 0 || vf === 0 || first === 0 || second === 0 || nth === 0) {
-    toast.error("Please set all the required parameters first", toastOptions)
+  if (!state.enableTCDetection) {
+    toast.error("Tachycardia detection disabled", toastOptions)
     return
   }
 
-  if (discriminators.D1(state, heartRates)) {
-    if (discriminators.D2(state, heartRates)) {
-      // shock required
+  // deliver shock
+  toast.success("Shock delivered", toastOptions)
+}
+
+export const rhythmID = (state, heartRates, vRate, aRate) => {
+  const { vt1, vf } = state.ventricularRates
+
+  if (discriminators.D1(vf, heartRates)) {
+    if (discriminators.D2(vf, heartRates)) {
+      deliverShockTreatment(state)
     } else {
-      if (discriminators.D3(state, heartRates)) {
-        if (discriminators.D4(state, heartRates)) {
-          if (discriminators.D5(state, heartRates)) {
-            // shock required
+      if (discriminators.D3(vt1, heartRates)) {
+        if (discriminators.D4(vt1, heartRates)) {
+          if (discriminators.D5(vRate, aRate)) {
+            deliverShockTreatment(state)
           } else {
             if (discriminators.D6(state, heartRates)) {
               toast.success("No shock advised", toastOptions)
@@ -27,7 +33,7 @@ export const rhythmID = (state, heartRates, vRate, aRate) => {
               if (discriminators.D7(state, heartRates)) {
                 toast.success("No shock advised", toastOptions)
               } else {
-                // shock required
+                deliverShockTreatment(state)
               }
             }
           }
@@ -39,10 +45,10 @@ export const rhythmID = (state, heartRates, vRate, aRate) => {
       }
     }
   } else {
-    if (discriminators.D3(state, heartRates)) {
-      if (discriminators.D4(state, heartRates)) {
-        if (discriminators.D5(state, heartRates)) {
-          // shock required
+    if (discriminators.D3(vt1, heartRates)) {
+      if (discriminators.D4(vt1, heartRates)) {
+        if (discriminators.D5(vRate, aRate)) {
+          deliverShockTreatment(state)
         } else {
           if (discriminators.D6(state, heartRates)) {
             toast.success("No shock advised", toastOptions)
@@ -50,7 +56,7 @@ export const rhythmID = (state, heartRates, vRate, aRate) => {
             if (discriminators.D7(state, heartRates)) {
               toast.success("No shock advised", toastOptions)
             } else {
-              // shock required
+              deliverShockTreatment(state)
             }
           }
         }
@@ -65,30 +71,33 @@ export const rhythmID = (state, heartRates, vRate, aRate) => {
 
 export const executeCommand = (state, dispatch, command) => {
   const [action, parameter, value] = command.split(" ")
-  if (isNaN(value) || !action || !parameter || !value) {
+  if (!action || !parameter || !value) {
     toast.error("Invalid command", toastOptions)
     return
   }
+
+  const { minHeartRate, vtDetection, vt2Detection, vfDetection, shockDose, nightHeartRate, upperHeartRate } = defaultParams
+  const { UPDATE_MIN_HEART_RATE, UPDATE_VENTRICULAR_RATES, UPDATE_TC_DETECTION, UPDATE_UPPER_HEART_RATE, UPDATE_NIGHT_HEART_RATE, UPDATE_MIN_HEART_RATE_AFTER_SHOCK, UPDATE_PULSE_AMP, UPDATE_PULSE_WIDTH, UPDATE_SHOCK_ENERGY, UPDATE_ENABLE_TC_DETECTION, UPDATE_BEEPER_CONTROL, UPDATE_SHOCKS_PER_EPISODE } = actionTypes
 
   switch (action) {
     case "SET":
       switch (parameter) {
         case "BT":
-          if (value < defaultParams.minHeartRate.min || value > defaultParams.minHeartRate.max) {
+          if (value < minHeartRate.min || value > minHeartRate.max) {
             toast.error("Min heart rate is out of range", toastOptions)
             return
           }
-          dispatch({ type: actionTypes.UPDATE_MIN_HEART_RATE, payload: value })
-          toast.success("Minimum heart rate updated", toastOptions)
+          dispatch({ type: UPDATE_MIN_HEART_RATE, payload: value })
+          toast.success("Min heart rate set to " + value, toastOptions)
           break
 
         case "VT1GT":
-          if (value < defaultParams.vtDetection.min || value > defaultParams.vtDetection.max) {
+          if (value < vtDetection.min || value > vtDetection.max) {
             toast.error("VT1 detection is not in range", toastOptions)
             return
           }
-          dispatch({ type: actionTypes.UPDATE_VENTRICULAR_RATES, payload: { vt1: value } })
-          toast.success("Ventricular rates updated", toastOptions)
+          dispatch({ type: UPDATE_VENTRICULAR_RATES, payload: { vt1: value } })
+          toast.success("VT1 rate set to " + value, toastOptions)
           break
 
         case "VT2GT":
@@ -96,98 +105,98 @@ export const executeCommand = (state, dispatch, command) => {
             toast.error("VT1 must be set first", toastOptions)
             return
           }
-          if (value < state.ventricularRates.vt2 || value < defaultParams.vt2Detection.min || value > defaultParams.vt2Detection.max) {
+          if (value < state.ventricularRates.vt1 || value < vt2Detection.min || value > vt2Detection.max) {
             toast.error("VT2 detection is not in range", toastOptions)
             return
           }
-          dispatch({ type: actionTypes.UPDATE_VENTRICULAR_RATES, payload: { vt2: value } })
-          toast.success("Ventricular rates updated", toastOptions)
+          dispatch({ type: UPDATE_VENTRICULAR_RATES, payload: { vt2: value } })
+          toast.success("VT2 rate set to " + value, toastOptions)
           break
 
         case "VFGT":
-          if (value < defaultParams.vfDetection.min || value > defaultParams.vfDetection.max) {
+          if (value < vfDetection.min || value > vfDetection.max) {
             toast.error("VF detection is out of range", toastOptions)
             return
           }
-          dispatch({ type: actionTypes.UPDATE_VENTRICULAR_RATES, payload: { vf: value } })
-          toast.success("Ventricular rates updated", toastOptions)
+          dispatch({ type: UPDATE_VENTRICULAR_RATES, payload: { vf: value } })
+          toast.success("VF rate set to " + value, toastOptions)
           break
 
         case "VT1":
-          dispatch({ type: actionTypes.UPDATE_TC_DETECTION, payload: { vt1: value } })
-          toast.success("TC detection updated", toastOptions)
+          dispatch({ type: UPDATE_TC_DETECTION, payload: { vt1: value } })
+          toast.success("VT1 counter set to " + value, toastOptions)
           break
 
         case "VT2":
-          dispatch({ type: actionTypes.UPDATE_TC_DETECTION, payload: { vt2: value } })
-          toast.success("TC detection updated", toastOptions)
+          dispatch({ type: UPDATE_TC_DETECTION, payload: { vt2: value } })
+          toast.success("VT2 counter set to " + value, toastOptions)
           break
 
         case "VT1RE":
-          dispatch({ type: actionTypes.UPDATE_TC_DETECTION, payload: { vt1Re: value } })
-          toast.success("TC detection updated", toastOptions)
+          dispatch({ type: UPDATE_TC_DETECTION, payload: { vt1Re: value } })
+          toast.success("VT1 re-detection set to " + value, toastOptions)
           break
 
         case "VF":
-          dispatch({ type: actionTypes.UPDATE_TC_DETECTION, payload: { vf: value } })
-          toast.success("TC detection updated", toastOptions)
+          dispatch({ type: UPDATE_TC_DETECTION, payload: { vf: value } })
+          toast.success("VF counter set to " + value, toastOptions)
           break
 
         case "UBT":
-          if (value < defaultParams.upperHeartRate.min || value > defaultParams.upperHeartRate.max) {
+          if (value < upperHeartRate.min || value > upperHeartRate.max) {
             toast.error("Upper heart rate is out of range", toastOptions)
             return
           }
-          dispatch({ type: actionTypes.UPDATE_UPPER_HEART_RATE, payload: value })
-          toast.success("Upper heart rate updated", toastOptions)
+          dispatch({ type: UPDATE_UPPER_HEART_RATE, payload: value })
+          toast.success("Upper heart rate set to " + value, toastOptions)
           break
 
         case "NBT":
-          if (value < defaultParams.nightHeartRate.min || value > defaultParams.nightHeartRate.max) {
+          if (value < nightHeartRate.min || value > nightHeartRate.max) {
             toast.error("Night heart rate is out of range", toastOptions)
             return
           }
-          dispatch({ type: actionTypes.UPDATE_NIGHT_HEART_RATE, payload: value })
-          toast.success("Night heart rate updated", toastOptions)
+          dispatch({ type: UPDATE_NIGHT_HEART_RATE, payload: value })
+          toast.success("Night heart rate set to " + value, toastOptions)
           break
 
         case "PBT":
-          if (value < defaultParams.minHeartRate.min || value > defaultParams.minHeartRate.max) {
+          if (value < minHeartRate.min || value > minHeartRate.max) {
             toast.error("Min heart rate is out of range", toastOptions)
             return
           }
-          dispatch({ type: actionTypes.UPDATE_MIN_HEART_RATE_AFTER_SHOCK, payload: value })
-          toast.success("Minimum heart rate updated", toastOptions)
+          dispatch({ type: UPDATE_MIN_HEART_RATE_AFTER_SHOCK, payload: value })
+          toast.success("Minimum post shock rate set to " + value, toastOptions)
           break
 
         case "PA":
-          dispatch({ type: actionTypes.UPDATE_PULSE_AMP, payload: { atrium: value } })
-          toast.success("Pulse amplitude updated", toastOptions)
+          dispatch({ type: UPDATE_PULSE_AMP, payload: { atrium: value } })
+          toast.success("Atrium pulse amplitude set to " + value, toastOptions)
           break
 
         case "LVA":
-          dispatch({ type: actionTypes.UPDATE_PULSE_AMP, payload: { leftVentricle: value } })
-          toast.success("Pulse amplitude updated", toastOptions)
+          dispatch({ type: UPDATE_PULSE_AMP, payload: { leftVentricle: value } })
+          toast.success("Left ventricle pulse amplitude set to " + value, toastOptions)
           break
 
         case "RVA":
-          dispatch({ type: actionTypes.UPDATE_PULSE_AMP, payload: { rightVentricle: value } })
-          toast.success("Pulse amplitude updated", toastOptions)
+          dispatch({ type: UPDATE_PULSE_AMP, payload: { rightVentricle: value } })
+          toast.success("Right ventricle pulse amplitude set to " + value, toastOptions)
           break
 
         case "PW":
-          dispatch({ type: actionTypes.UPDATE_PULSE_WIDTH, payload: { atrium: value } })
-          toast.success("Pulse width updated", toastOptions)
+          dispatch({ type: UPDATE_PULSE_WIDTH, payload: { atrium: value } })
+          toast.success("Pulse width set to " + value, toastOptions)
           break
 
         case "LVW":
-          dispatch({ type: actionTypes.UPDATE_PULSE_WIDTH, payload: { leftVentricle: value } })
-          toast.success("Pulse width updated", toastOptions)
+          dispatch({ type: UPDATE_PULSE_WIDTH, payload: { leftVentricle: value } })
+          toast.success("Left ventricle pulse width set to " + value, toastOptions)
           break
 
         case "RVW":
-          dispatch({ type: actionTypes.UPDATE_PULSE_WIDTH, payload: { rightVentricle: value } })
-          toast.success("Pulse width updated", toastOptions)
+          dispatch({ type: UPDATE_PULSE_WIDTH, payload: { rightVentricle: value } })
+          toast.success("Right ventricle pulse width set to " + value, toastOptions)
           break
 
         default:
@@ -196,20 +205,40 @@ export const executeCommand = (state, dispatch, command) => {
       break
 
     case "REL":
+      if (value < shockDose.min || value > shockDose.max) {
+        toast.error("Shock energy is out of range", toastOptions)
+        return
+      }
       switch (parameter) {
         case "VF1":
-          dispatch({ type: actionTypes.UPDATE_SHOCK_ENERGY, payload: { first: value } })
-          toast.success("Shock energy updated", toastOptions)
+          dispatch({ type: UPDATE_SHOCK_ENERGY, payload: { first: value } })
+          toast.success("First shock energy set to " + value + "J", toastOptions)
           break
 
         case "VF2":
-          dispatch({ type: actionTypes.UPDATE_SHOCK_ENERGY, payload: { second: value } })
-          toast.success("Shock energy updated", toastOptions)
+          if (state.shockEnergy.first === 0) {
+            toast.error("First shock dose must be set first", toastOptions)
+            return
+          }
+          if (value < state.shockEnergy.first) {
+            toast.error("Second shock dose must be greater than first shock dose", toastOptions)
+            return
+          }
+          dispatch({ type: UPDATE_SHOCK_ENERGY, payload: { second: value } })
+          toast.success("Second shock energy set to " + value + "J", toastOptions)
           break
 
         case "VFN":
-          dispatch({ type: actionTypes.UPDATE_SHOCK_ENERGY, payload: { nth: value } })
-          toast.success("Shock energy updated", toastOptions)
+          if (state.shockEnergy.first === 0) {
+            toast.error("First shock dose must be set first", toastOptions)
+            return
+          }
+          if (value < state.shockEnergy.second) {
+            toast.error("Nth shock dose must be greater than second shock dose", toastOptions)
+            return
+          }
+          dispatch({ type: UPDATE_SHOCK_ENERGY, payload: { nth: value } })
+          toast.success("Nth shock energy set to " + value + "J", toastOptions)
           break
 
         default:
@@ -220,8 +249,8 @@ export const executeCommand = (state, dispatch, command) => {
     case "ENL":
       switch (parameter) {
         case "DET":
-          dispatch({ type: actionTypes.UPDATE_ENABLE_TC_DETECTION, payload: value === "ON" ? true : false })
-          toast.success("TC detection updated", toastOptions)
+          dispatch({ type: UPDATE_ENABLE_TC_DETECTION, payload: value === "ON" ? true : false })
+          toast.success("Tachycardia detection set to " + value, toastOptions)
           break
 
         default:
@@ -232,8 +261,8 @@ export const executeCommand = (state, dispatch, command) => {
     case "DISABLE":
       switch (parameter) {
         case "BEEP":
-          dispatch({ type: actionTypes.UPDATE_BEEPER_CONTROL, payload: false })
-          toast.success("Beeper control updated", toastOptions)
+          dispatch({ type: UPDATE_BEEPER_CONTROL, payload: false })
+          toast.success("Beeper control disabled", toastOptions)
           break
 
         default:
@@ -273,8 +302,8 @@ export const executeCommand = (state, dispatch, command) => {
           break
 
         case "MAXS":
-          dispatch({ type: actionTypes.UPDATE_SHOCKS_PER_EPISODE, payload: value })
-          toast.success("Shocks per episode updated", toastOptions)
+          dispatch({ type: UPDATE_SHOCKS_PER_EPISODE, payload: value })
+          toast.success("Shocks per episode set to " + value + "J", toastOptions)
           break
 
         default:

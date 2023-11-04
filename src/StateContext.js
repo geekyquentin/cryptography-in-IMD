@@ -48,7 +48,7 @@ function reducer(state, action) {
     case actionTypes.UPDATE_TC_DETECTION:
       return { ...state, tcDetection: { ...state.tcDetection, ...action.payload } }
     case actionTypes.UPDATE_SHOCK_ENERGY:
-      return { ...state, shockEnergy: action.payload }
+      return { ...state, shockEnergy: { ...state.shockEnergy, ...action.payload } }
     case actionTypes.UPDATE_ENABLE_TC_DETECTION:
       return { ...state, enableTCDetection: action.payload }
     case actionTypes.UPDATE_UPPER_HEART_RATE:

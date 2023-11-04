@@ -8,19 +8,21 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  flex-wrap: wrap;
   width: 100%;
 
   background-color: $bg-color-biege;
-  padding: 2rem;
+  padding: 1rem 2rem 2rem 2rem;
   border-radius: 1rem;
   border: 2px solid $border-color-biege;
+  // box-shadow: $box-shadow;
 
   // &__col {
 
   // }
 
   &__item {
-    margin-bottom: 1rem;
+    margin-top: 1rem;
 
     &:last-child {
       margin-bottom: 0;

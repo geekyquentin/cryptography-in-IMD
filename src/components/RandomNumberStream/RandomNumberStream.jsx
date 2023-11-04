@@ -10,6 +10,7 @@ export default function RandomNumberStream() {
   const [isRunning, setIsRunning] = useState(true)
   const [intervalTime, setIntervalTime] = useState(2500)
   const [stream, setStream] = useState([])
+  const [avRates, setAvRates] = useState([0, 0])
 
   useEffect(() => {
     let interval
@@ -60,13 +61,21 @@ export default function RandomNumberStream() {
     }
 
     setStream((prevStream) => prevStream.slice(1))
+    setAvRates([getRandomNumber(), getRandomNumber()])
+
+    const { vt1, vf } = state.ventricularRates
+    const { first, second, nth } = state.shockEnergy
+    if (vt1 === 0 || vf === 0 || first === 0 || second === 0 || nth === 0) {
+      return
+    }
+
     rhythmID(
       state,
       stream.map((item) => item.number),
-      getRandomNumber(),
-      getRandomNumber()
+      avRates[0],
+      avRates[1]
     )
-  }, [stream, state])
+  }, [stream, state, avRates])
 
   return (
     <div className="random-number-stream">
@@ -84,7 +93,7 @@ export default function RandomNumberStream() {
       </div>
       <div className="number-stream">
         {stream.map((item) => (
-          <div
+          <h3
             key={item.id}
             className="number"
             style={{
@@ -93,8 +102,12 @@ export default function RandomNumberStream() {
             }}
           >
             {item.number}
-          </div>
+          </h3>
         ))}
+      </div>
+      <div className="av-rates">
+        <h3>A rate: {avRates[0]}</h3>
+        <h3>V rate: {avRates[1]}</h3>
       </div>
     </div>
   )
