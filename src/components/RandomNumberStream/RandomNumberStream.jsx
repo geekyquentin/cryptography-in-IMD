@@ -2,12 +2,12 @@ import { useState, useEffect } from "react"
 import { useStateContext } from "../../StateContext"
 import { defaultParams } from "../../data"
 import "./RandomNumberStream.scss"
-import { rhythmID } from "../../actions"
+import { simulateICD } from "../../actions"
 
 export default function RandomNumberStream() {
   const { state } = useStateContext()
+  const { isRunning } = state
 
-  const [isRunning, setIsRunning] = useState(true)
   const [intervalTime, setIntervalTime] = useState(2500)
   const [stream, setStream] = useState([])
   const [avRates, setAvRates] = useState([0, 0])
@@ -46,10 +46,6 @@ export default function RandomNumberStream() {
     }
   }, [isRunning, intervalTime])
 
-  const startStopStream = () => {
-    setIsRunning((prevIsRunning) => !prevIsRunning)
-  }
-
   const getRandomNumber = () => {
     const { min, max } = defaultParams.randomRange
     return Math.floor(Math.random() * (max - min + 1) + min)
@@ -63,13 +59,7 @@ export default function RandomNumberStream() {
     setStream((prevStream) => prevStream.slice(1))
     setAvRates([getRandomNumber(), getRandomNumber()])
 
-    const { vt1, vf } = state.ventricularRates
-    const { first, second, nth } = state.shockEnergy
-    if (vt1 === 0 || vf === 0 || first === 0 || second === 0 || nth === 0) {
-      return
-    }
-
-    rhythmID(
+    simulateICD(
       state,
       stream.map((item) => item.number),
       avRates[0],
@@ -87,9 +77,6 @@ export default function RandomNumberStream() {
           value={intervalTime}
           onChange={(e) => setIntervalTime(e.target.value)}
         />
-        <button onClick={startStopStream} className="toggle-stream-btn">
-          {isRunning ? "Stop Stream" : "Start Stream"}
-        </button>
       </div>
       <div className="number-stream">
         {stream.map((item) => (

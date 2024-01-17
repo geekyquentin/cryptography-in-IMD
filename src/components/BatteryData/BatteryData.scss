@@ -1,0 +1,11 @@
+.battery-stat {
+  width: 100%;
+
+  &__color-green {
+    color: #00ff00;
+  }
+
+  &__color-red {
+    color: #ff0000;
+  }
+}

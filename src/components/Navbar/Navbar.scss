@@ -1,0 +1,24 @@
+@import "../../styles/Variables.scss";
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  margin: 0 auto 1.5rem auto;
+
+  background-color: $bg-color-biege;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  border-bottom: 2px solid $border-color-biege;
+}
+
+.navbar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+
+  @media (max-width: $sm) {
+    font-size: 1.2rem;
+  }
+}

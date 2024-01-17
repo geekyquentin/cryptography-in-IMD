@@ -4,6 +4,9 @@ import * as actionTypes from "./data/actionTypes"
 const StateContext = createContext()
 
 const initialState = {
+  isRunning: false,
+
+  // ICD parameters
   minHeartRate: 0,
   ventricularRates: {
     vt1: 0,
@@ -25,6 +28,7 @@ const initialState = {
   upperHeartRate: 0,
   nightHeartRate: 0,
   minHeartRateAfterShock: 0,
+  mode: "",
   beeperControl: true,
   pulseAmp: {
     atrium: 0,
@@ -41,6 +45,8 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
+    case actionTypes.UPDATE_IS_RUNNING:
+      return { ...state, isRunning: action.payload }
     case actionTypes.UPDATE_MIN_HEART_RATE:
       return { ...state, minHeartRate: action.payload }
     case actionTypes.UPDATE_VENTRICULAR_RATES:

@@ -1,4 +1,4 @@
-import { CommandInput, DisplayPatientData, DefineParameters, RandomNumberStream } from "./components"
+import { CommandInput, BatteryData, DisplayPatientData, Navbar, RandomNumberStream } from "./components"
 import { StateProvider } from './StateContext'
 import { toastOptions } from "./data"
 
@@ -13,8 +13,9 @@ function App() {
   return (
     <>
       <div className="App">
-        <h1 className="App__title">Data manipulation simulation</h1>
         <StateProvider>
+          <Navbar />
+          <BatteryData />
           <DisplayPatientData />
           <RandomNumberStream />
           <CommandInput />

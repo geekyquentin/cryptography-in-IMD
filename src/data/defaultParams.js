@@ -1,11 +1,11 @@
 const defaultParams = {
   "randomRange": {
-    "min": 60,
-    "max": 200
+    "min": 30,
+    "max": 220
   },
   "minHeartRate": {
-    "min": 70,
-    "max": 120
+    "min": 30,
+    "max": 75
   },
   "vtDetection": {
     "min": 120,
@@ -26,12 +26,14 @@ const defaultParams = {
   },
   "nightHeartRate": {
     "min": 50,
-    "max": 70
+    "max": 120
   },
-  "upperHeartRate": {
-    "min": 60,
-    "max": 100
-  },
+  "upperHeartRate": 220,
+  "modes": [
+    "AAI(R)",
+    "VVI(R)",
+    "DDD(R)",
+  ]
 }
 
 export default defaultParams
