@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react"
 import { useStateContext } from "../../StateContext"
-import "./BatteryData.scss"
+import BatteryGauge from "react-battery-gauge"
 import { simulateBattery } from "../../actions"
+import { batteryCustomization } from "../../data"
+
+import "./BatteryData.scss"
 
 const BATTERY_MAX = 100
 const DEFAULT_DEPLETION_RATE = 0.1
@@ -9,7 +12,7 @@ const DEFAULT_DEPLETION_RATE = 0.1
 export default function BatteryData() {
   const [batteryLevel, setBatteryLevel] = useState(BATTERY_MAX)
   const { state } = useStateContext()
-  const { pulseAmp, pulseWidth } = state
+  const { isRunning, pulseAmp, pulseWidth } = state
 
   const calculateDepletionRate = () => {
     let totalDepletion = 0
@@ -22,32 +25,34 @@ export default function BatteryData() {
   }
 
   useEffect(() => {
-    let interval = setInterval(() => {
-      const depletionRate = calculateDepletionRate()
-      setBatteryLevel((prevLevel) =>
-        Math.max(0, Math.min(100, prevLevel - depletionRate))
-      )
+    let interval
 
-      if (batteryLevel > 0) {
-        simulateBattery(state, batteryLevel)
-      }
-    }, 1000)
+    if (isRunning) {
+      interval = setInterval(() => {
+        const depletionRate = calculateDepletionRate()
+        setBatteryLevel((prevLevel) =>
+          Math.max(0, Math.min(100, prevLevel - depletionRate))
+        )
+        setBatteryLevel((prevLevel) => Math.round(prevLevel * 100) / 100)
+
+        if (batteryLevel > 0) {
+          simulateBattery(state, batteryLevel)
+        }
+      }, 1000)
+    } else {
+      clearInterval(interval)
+    }
 
     return () => clearInterval(interval)
-  }, [pulseAmp, pulseWidth])
+  }, [isRunning, pulseAmp, pulseWidth])
 
   return (
     <div className="battery-stat">
-      <h2>
-        Battery Level:{" "}
-        <span
-          className={`battery-stat__color-${
-            batteryLevel < 20 ? "red" : "green"
-          }`}
-        >
-          {batteryLevel}%
-        </span>
-      </h2>
+      <BatteryGauge
+        value={batteryLevel}
+        size={60}
+        customization={batteryCustomization}
+      />
     </div>
   )
 }

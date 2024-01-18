@@ -2,13 +2,13 @@
 
 input {
   padding: 0.5rem;
-  border: 2px solid $border-color-biege;
+  border: 2px solid var(--light-border-color);
   border-radius: 4px;
   box-sizing: border-box;
 
   &:focus {
     outline: none;
-    border-color: $border-color-focus;
+    border-color: var(--border-color);
     transition: $transition;
   }
 }
@@ -20,17 +20,27 @@ button,
 
 .btn-primary,
 .btn-secondary,
+.btn-tertiary,
 .btn-primary-sm,
-.btn-secondary-sm {
+.btn-secondary-sm,
+.btn-tertiary-sm {
   font-weight: bold;
   text-transform: uppercase;
   transition: all $transition;
 }
 
 .btn-primary,
-.btn-secondary {
+.btn-secondary,
+.btn-tertiary {
   padding: 1rem 2rem;
   border-radius: $border-radius;
+}
+
+.btn-primary-sm,
+.btn-secondary-sm,
+.btn-tertiary-sm {
+  padding: 0.7rem 1rem;
+  border-radius: $border-radius-sm;
 }
 
 .btn-primary,
@@ -55,10 +65,15 @@ button,
   }
 }
 
-.btn-primary-sm,
-.btn-secondary-sm {
-  padding: 0.7rem 1rem;
-  border-radius: $border-radius-sm;
+.btn-tertiary,
+.btn-tertiary-sm {
+  background: var(--light-blue);
+  border: solid $border-width-sm var(--bright-blue);
+
+  &:hover {
+    background: var(--bright-blue);
+    border-color: var(--cobalt-blue);
+  }
 }
 
 .submit-btn {

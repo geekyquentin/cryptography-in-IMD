@@ -1,10 +1,8 @@
-import { CommandInput, BatteryData, DisplayPatientData, Navbar, RandomNumberStream, Modal } from "./components"
-import { useStateContext, StateProvider } from './StateContext'
+import { CommandInput, BatteryData, DisplayPatientData, Navbar, RandomNumberStream, FailureDialog } from "./components"
+import { StateProvider } from './StateContext'
 import { toastOptions } from "./data"
 
 import { ToastContainer, Slide } from "react-toastify"
-
-import { AnimatePresence } from "framer-motion"
 
 import "react-toastify/dist/ReactToastify.css"
 import "./styles/Toast.scss"
@@ -23,10 +21,7 @@ function App() {
           <CommandInput />
           {/* <DefineParameters /> */}
 
-          {/* <Modal
-            header={"Heart Failure"}
-            description={"Patient has died due to ventricular fibrillation. Patient is not allowed to have more than 5 shocks per episode."}
-          /> */}
+          <FailureDialog />
         </StateProvider>
       </div>
 

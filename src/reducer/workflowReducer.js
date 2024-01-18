@@ -5,11 +5,10 @@ const workflowReducer = (state, action) => {
     case actionTypes.UPDATE_IS_RUNNING:
       return { ...state, isRunning: action.payload }
     case actionTypes.UPDATE_IS_FAILED:
-      return { ...state, isFailed: action.payload }
-    case actionTypes.UPDATE_FAILURE_DESCRIPTION:
-      return { ...state, failureDescription: action.payload }
-    case actionTypes.CLOSE_MODAL:
-      return { ...state, isFailed: false, failureDescription: "", isRunning: false }
+      const { dialogHeader, dialogDescription } = action.payload
+      return { ...state, isFailed: true, isRunning: false, dialogHeader, dialogDescription }
+    case actionTypes.RESTART_WORKFLOW:
+      return { ...state, isFailed: false, dialogHeader: "", dialogDescription: "" }
     default:
       return state
   }

@@ -8,7 +8,8 @@ const StateContext = createContext()
 const initialState = {
   isRunning: false,
   isFailed: false,
-  failureDescription: "",
+  dialogHeader: "",
+  dialogDescription: "",
 
   // ICD parameters
   minHeartRate: 0,

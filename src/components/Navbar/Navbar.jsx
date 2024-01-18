@@ -15,7 +15,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-title">Data Manipulation Attack</div>
       <button
-        className="simulation-button btn-secondary-sm"
+        className="simulation-button btn-primary-sm"
         onClick={toggleSimulation}
       >
         {isRunning ? "Stop Simulation" : "Start Simulation"}

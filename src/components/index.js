@@ -6,3 +6,4 @@ export { default as RandomNumberStream } from "./RandomNumberStream/RandomNumber
 export { default as Navbar } from "./Navbar/Navbar"
 export { default as Modal } from "./Modal/Modal"
 export { default as Overlay } from "./Overlay/Overlay"
+export { default as FailureDialog } from "./FailureDialog/FailureDialog"

@@ -8,10 +8,10 @@
   width: 100%;
   margin: 0 auto 1.5rem auto;
 
-  background-color: $bg-color-biege;
+  background-color: var(--bright-background-color);
   padding: 0.5rem 1rem;
   box-sizing: border-box;
-  border-bottom: 2px solid $border-color-biege;
+  border-bottom: 2px solid var(--light-border-color);
 }
 
 .navbar-title {

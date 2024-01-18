@@ -11,10 +11,11 @@
   flex-wrap: wrap;
   width: 100%;
 
-  background-color: $bg-color-biege;
+  // background-color: $bg-color-biege;
+  background-color: var(--bright-background-color);
   padding: 1rem 2rem 2rem 2rem;
   border-radius: 1rem;
-  border: 2px solid $border-color-biege;
+  border: 2px solid var(--light-border-color);
   // box-shadow: $box-shadow;
 
   // &__col {

@@ -18,7 +18,10 @@ const Modal = ({ header, description, handleClick }) => {
         <div className="modal">
           <h1 className="modal__header">{header}</h1>
           <p>{description}</p>
-          <button className="modal-close btn-primary-sm" onClick={handleClick}>
+          <button
+            className="modal-close btn-secondary-sm"
+            onClick={handleClick}
+          >
             Click To Restart
           </button>
         </div>
