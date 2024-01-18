@@ -2,7 +2,7 @@ import defaultParams from "./defaultParams"
 
 const batteryCustomization = {
   readingText: {
-    fontSize: 30,
+    fontSize: 27,
   },
   batteryBody: {
     cornerRadius: 8,

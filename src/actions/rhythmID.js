@@ -1,7 +1,9 @@
+import deliverShockTreatment from "./shockTreatment"
+
 import { toast } from "react-toastify"
 import { toastOptions } from "../data"
 
-export default function rhythmID(state, heartRates, vRate, aRate, deliverShockTreatment) {
+export default function rhythmID(state, heartRates, vRate, aRate) {
   const { vt1, vf } = state.ventricularRates
 
   if (D1(vf, heartRates)) {

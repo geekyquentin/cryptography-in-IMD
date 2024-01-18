@@ -1,4 +1,4 @@
-import { CommandInput, BatteryData, DisplayPatientData, Navbar, RandomNumberStream, FailureDialog } from "./components"
+import { CommandInput, DisplayPatientData, Navbar, RandomNumberStream, FailureDialog } from "./components"
 import { StateProvider } from './StateContext'
 import { toastOptions } from "./data"
 
@@ -15,7 +15,6 @@ function App() {
       <div className="App">
         <StateProvider>
           <Navbar />
-          <BatteryData />
           <DisplayPatientData />
           <RandomNumberStream />
           <CommandInput />

@@ -1,4 +1,5 @@
 import { useStateContext } from "../../StateContext"
+import { BatteryData } from "../"
 
 import "./DisplayPatientData.scss"
 
@@ -22,7 +23,12 @@ export default function DisplayPatientData() {
 
   return (
     <div className="stats">
-      <h2 className="comp-heading">Patient and ICD data</h2>
+      <div className="comp-heading patient-data-header">
+        <h2 className="comp-heading">Patient and ICD data</h2>
+        <div className="battery-data center-flex">
+          <BatteryData />
+        </div>
+      </div>
       <div className="stat-box">
         <div className="stat-box__col">
           <div className="stat-box__item">

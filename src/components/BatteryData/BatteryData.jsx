@@ -4,8 +4,6 @@ import BatteryGauge from "react-battery-gauge"
 import { simulateBattery } from "../../actions"
 import { batteryCustomization } from "../../data"
 
-import "./BatteryData.scss"
-
 const BATTERY_MAX = 100
 const DEFAULT_DEPLETION_RATE = 0.1
 
@@ -33,7 +31,6 @@ export default function BatteryData() {
         setBatteryLevel((prevLevel) =>
           Math.max(0, Math.min(100, prevLevel - depletionRate))
         )
-        setBatteryLevel((prevLevel) => Math.round(prevLevel * 100) / 100)
 
         if (batteryLevel > 0) {
           simulateBattery(state, batteryLevel)
@@ -47,12 +44,10 @@ export default function BatteryData() {
   }, [isRunning, pulseAmp, pulseWidth])
 
   return (
-    <div className="battery-stat">
-      <BatteryGauge
-        value={batteryLevel}
-        size={60}
-        customization={batteryCustomization}
-      />
-    </div>
+    <BatteryGauge
+      value={batteryLevel}
+      size={60}
+      customization={batteryCustomization}
+    />
   )
 }

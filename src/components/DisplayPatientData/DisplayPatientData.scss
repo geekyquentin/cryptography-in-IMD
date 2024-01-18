@@ -1,5 +1,18 @@
 @import "../../styles/Variables.scss";
 
+.patient-data-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  & > .battery-data {
+    margin-right: 0.5rem;
+  }
+
+  width: 100%;
+}
+
 .stats {
   width: 100%;
 }
