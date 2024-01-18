@@ -5,7 +5,7 @@ import "./RandomNumberStream.scss"
 import { simulateICD } from "../../actions"
 
 export default function RandomNumberStream() {
-  const { state } = useStateContext()
+  const { state, dispatch } = useStateContext()
   const { isRunning } = state
 
   const [intervalTime, setIntervalTime] = useState(2500)
@@ -61,6 +61,7 @@ export default function RandomNumberStream() {
 
     simulateICD(
       state,
+      dispatch,
       stream.map((item) => item.number),
       avRates[0],
       avRates[1]

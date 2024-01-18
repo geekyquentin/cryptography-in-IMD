@@ -1,10 +1,14 @@
 import { createContext, useContext, useReducer } from "react"
-import * as actionTypes from "./data/actionTypes"
+import parameterReducer from "./reducer/parameterReducer"
+import workflowReducer from "./reducer/workflowReducer"
+import combinedReducer from "./reducer/combinedReducer"
 
 const StateContext = createContext()
 
 const initialState = {
   isRunning: false,
+  isFailed: false,
+  failureDescription: "",
 
   // ICD parameters
   minHeartRate: 0,
@@ -43,36 +47,11 @@ const initialState = {
   shocksPerEpisode: 0,
 }
 
-function reducer(state, action) {
-  switch (action.type) {
-    case actionTypes.UPDATE_IS_RUNNING:
-      return { ...state, isRunning: action.payload }
-    case actionTypes.UPDATE_MIN_HEART_RATE:
-      return { ...state, minHeartRate: action.payload }
-    case actionTypes.UPDATE_VENTRICULAR_RATES:
-      return { ...state, ventricularRates: { ...state.ventricularRates, ...action.payload } }
-    case actionTypes.UPDATE_TC_DETECTION:
-      return { ...state, tcDetection: { ...state.tcDetection, ...action.payload } }
-    case actionTypes.UPDATE_SHOCK_ENERGY:
-      return { ...state, shockEnergy: { ...state.shockEnergy, ...action.payload } }
-    case actionTypes.UPDATE_ENABLE_TC_DETECTION:
-      return { ...state, enableTCDetection: action.payload }
-    case actionTypes.UPDATE_UPPER_HEART_RATE:
-      return { ...state, upperHeartRate: action.payload }
-    case actionTypes.UPDATE_NIGHT_HEART_RATE:
-      return { ...state, nightHeartRate: action.payload }
-    case actionTypes.UPDATE_MIN_HEART_RATE_AFTER_SHOCK:
-      return { ...state, minHeartRateAfterShock: action.payload }
-    case actionTypes.UPDATE_BEEPER_CONTROL:
-      return { ...state, beeperControl: action.payload }
-    case actionTypes.UPDATE_PULSE_AMP:
-      return { ...state, pulseAmp: { ...state.pulseAmp, ...action.payload } }
-    case actionTypes.UPDATE_PULSE_WIDTH:
-      return { ...state, pulseWidth: { ...state.pulseWidth, ...action.payload } }
-    case actionTypes.UPDATE_SHOCKS_PER_EPISODE:
-      return { ...state, shocksPerEpisode: action.payload }
-    default:
-      return state
+const reducer = (state, action) => {
+  return {
+    // ...parameterReducer(state, action),
+    // ...workflowReducer(state, action),
+    ...combinedReducer(state, action),
   }
 }
 

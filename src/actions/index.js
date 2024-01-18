@@ -6,9 +6,10 @@ import { toastOptions, defaultParams } from "../data"
 
 export { default as simulateBattery } from "./batteryDepletion"
 
-export const simulateICD = (state, heartRates, vRate, aRate) => {
+export const simulateICD = (state, dispatch, heartRates, vRate, aRate) => {
   const { first, second, nth } = state.shockEnergy
   const { vt1, vt2, vf } = state.ventricularRates
+  const { isFailed } = state
 
   // simulate rhythmID
   if (vt1 && vt2 && vf && first && second && nth) {
@@ -22,7 +23,7 @@ export const simulateICD = (state, heartRates, vRate, aRate) => {
 
   // min heart rate
   if (currentHeartRate < state.minHeartRate.min) {
-    toast.error("Patient has died", toastOptions)
+    dispatch({ type: actionTypes.UPDATE_IS_FAILED, payload: true })
   }
 
   // ubt and nbt rate detection
@@ -30,7 +31,7 @@ export const simulateICD = (state, heartRates, vRate, aRate) => {
   if (currentTime >= 8 && currentTime <= 20) {
     // day time upper heart beat detection
     if (currentHeartRate > state.upperHeartRate) {
-      toast.error("Patient has died due to heart failure", toastOptions)
+
     }
   } else if (currentTime >= 0 && currentTime <= 4) {
     // night time upper heart beat detection

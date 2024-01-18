@@ -14,7 +14,10 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-title">Data Manipulation Attack</div>
-      <button className="simulation-button" onClick={toggleSimulation}>
+      <button
+        className="simulation-button btn-secondary-sm"
+        onClick={toggleSimulation}
+      >
         {isRunning ? "Stop Simulation" : "Start Simulation"}
       </button>
     </nav>
