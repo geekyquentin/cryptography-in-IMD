@@ -39,9 +39,8 @@ export default function deliverShockTreatment(state, dispatch, currentHeartRate)
         iteration
       )
 
-      console.log(getRandomProbability(), probability)
       if (getRandomProbability() <= probability) {
-        toast.success(`Shock treatment successful on attempt ${i} with shock value ${shockValue}`)
+        toast.success(`Shock treatment successful on attempt ${i} with shock value ${shockValue}`, toastOptions)
         return true
       }
     }

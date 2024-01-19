@@ -12,12 +12,6 @@ export default function executeCommand(state, dispatch, command) {
 
   const {
     minHeartRate,
-    vtDetection,
-    vt2Detection,
-    vfDetection,
-    shockDose,
-    nightHeartRate,
-    upperHeartRate
   } = defaultParams
   const {
     UPDATE_MIN_HEART_RATE,

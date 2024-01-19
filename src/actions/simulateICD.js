@@ -1,9 +1,6 @@
 import * as actionTypes from "../data/actionTypes"
 import rhythmID from "./rhythmID"
 
-import { toast } from "react-toastify"
-import { toastOptions, defaultParams } from "../data"
-
 export default function simulateICD(state, dispatch, heartRates, vRate, aRate) {
   const { first, second, nth } = state.shockEnergy
   const { vt1, vt2, vf } = state.ventricularRates
@@ -14,8 +11,6 @@ export default function simulateICD(state, dispatch, heartRates, vRate, aRate) {
   }
 
   // simulate other ICD parameters
-  const { minHeartRate, vtDetection, vt2Detection, vfDetection, shockDose, nightHeartRate, upperHeartRate } = defaultParams
-
   const currentHeartRate = heartRates[heartRates.length - 1]
 
   // min heart rate

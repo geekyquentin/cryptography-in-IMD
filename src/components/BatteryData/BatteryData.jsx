@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useStateContext } from "../../StateContext"
 import BatteryGauge from "react-battery-gauge"
 import { simulateBattery } from "../../actions"
@@ -18,7 +18,7 @@ export default function BatteryData() {
     pacingThresholdSetup,
   } = state
 
-  const calculateDepletionRate = () => {
+  const calculateDepletionRate = useCallback(() => {
     let totalDepletion = 0
     for (const chamber in pulseAmp) {
       const amp = pulseAmp[chamber]
@@ -27,7 +27,7 @@ export default function BatteryData() {
         (amp - pacingThresholdSetup) * 0.05 + (width - 0.4) * 0.02
     }
     return DEFAULT_DEPLETION_RATE + totalDepletion
-  }
+  }, [pulseAmp, pulseWidth, pacingThresholdSetup])
 
   useEffect(() => {
     let interval
@@ -48,7 +48,14 @@ export default function BatteryData() {
     }
 
     return () => clearInterval(interval)
-  }, [isRunning, pulseAmp, pulseWidth])
+  }, [
+    isRunning,
+    pulseAmp,
+    pulseWidth,
+    beeperControl,
+    dispatch,
+    calculateDepletionRate,
+  ])
 
   return (
     <BatteryGauge
