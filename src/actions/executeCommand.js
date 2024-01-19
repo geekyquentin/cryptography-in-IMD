@@ -5,13 +5,37 @@ import { toastOptions, defaultParams } from "../data"
 
 export default function executeCommand(state, dispatch, command) {
   const [action, parameter, value] = command.split(" ")
-  if (!action || !parameter || !value) {
+  if (!action || !parameter) {
     toast.error("Invalid command", toastOptions)
     return
   }
 
-  const { minHeartRate, vtDetection, vt2Detection, vfDetection, shockDose, nightHeartRate, upperHeartRate } = defaultParams
-  const { UPDATE_MIN_HEART_RATE, UPDATE_VENTRICULAR_RATES, UPDATE_TC_DETECTION, UPDATE_UPPER_HEART_RATE, UPDATE_NIGHT_HEART_RATE, UPDATE_MIN_HEART_RATE_AFTER_SHOCK, UPDATE_MODE_SWITCH, UPDATE_PULSE_AMP, UPDATE_PULSE_WIDTH, UPDATE_SHOCK_ENERGY, UPDATE_ENABLE_TC_DETECTION, UPDATE_BEEPER_CONTROL, UPDATE_SHOCKS_PER_EPISODE } = actionTypes
+  const {
+    minHeartRate,
+    vtDetection,
+    vt2Detection,
+    vfDetection,
+    shockDose,
+    nightHeartRate,
+    upperHeartRate
+  } = defaultParams
+  const {
+    UPDATE_MIN_HEART_RATE,
+    UPDATE_VENTRICULAR_RATES,
+    UPDATE_TC_DETECTION,
+    UPDATE_UPPER_HEART_RATE,
+    UPDATE_NIGHT_HEART_RATE,
+    UPDATE_MIN_HEART_RATE_AFTER_SHOCK,
+    UPDATE_RESCUE_SHOCK,
+    UPDATE_MODE_SWITCH,
+    UPDATE_PULSE_AMP,
+    UPDATE_PULSE_WIDTH,
+    UPDATE_SHOCK_ENERGY,
+    UPDATE_ENABLE_TC_DETECTION,
+    UPDATE_BEEPER_CONTROL,
+    UPDATE_PACING_THRESHOLD_SETUP,
+    UPDATE_SHOCKS_PER_EPISODE
+  } = actionTypes
 
   switch (action) {
     case "SET":
@@ -81,16 +105,31 @@ export default function executeCommand(state, dispatch, command) {
           break
 
         case "PA":
+          if (value < state.pacingThresholdSetup) {
+            toast.error("Pacing amplitude must be greater than " + state.pacingThresholdSetup, toastOptions)
+            return
+          }
+
           dispatch({ type: UPDATE_PULSE_AMP, payload: { atrium: value } })
           toast.success("Atrium pulse amplitude set to " + value, toastOptions)
           break
 
         case "LVA":
+          if (value < state.pacingThresholdSetup) {
+            toast.error("Pacing amplitude must be greater than " + state.pacingThresholdSetup, toastOptions)
+            return
+          }
+
           dispatch({ type: UPDATE_PULSE_AMP, payload: { leftVentricle: value } })
           toast.success("Left ventricle pulse amplitude set to " + value, toastOptions)
           break
 
         case "RVA":
+          if (value < state.pacingThresholdSetup) {
+            toast.error("Pacing amplitude must be greater than " + state.pacingThresholdSetup, toastOptions)
+            return
+          }
+
           dispatch({ type: UPDATE_PULSE_AMP, payload: { rightVentricle: value } })
           toast.success("Right ventricle pulse amplitude set to " + value, toastOptions)
           break
@@ -108,6 +147,11 @@ export default function executeCommand(state, dispatch, command) {
         case "RVW":
           dispatch({ type: UPDATE_PULSE_WIDTH, payload: { rightVentricle: value } })
           toast.success("Right ventricle pulse width set to " + value, toastOptions)
+          break
+
+        case "PT":
+          dispatch({ type: UPDATE_PACING_THRESHOLD_SETUP, payload: value })
+          toast.success("Pacing threshold set to " + value, toastOptions)
           break
 
         default:
@@ -164,11 +208,16 @@ export default function executeCommand(state, dispatch, command) {
     case "START":
       switch (parameter) {
         case "RSHK":
-          // start rescue shock
+          if (state.rescueShock) {
+            return
+          }
+
+          dispatch({ type: UPDATE_RESCUE_SHOCK, payload: true })
+          toast.success("Rescue shock started", toastOptions)
           break
 
         case "DEFT":
-          // start defibrillation
+          // start defibrillation testing
           break
 
         default:
@@ -179,7 +228,12 @@ export default function executeCommand(state, dispatch, command) {
     case "ABORT":
       switch (parameter) {
         case "RSHK":
-          // abort rescue shock
+          if (!state.rescueShock) {
+            return
+          }
+
+          dispatch({ type: UPDATE_RESCUE_SHOCK, payload: false })
+          toast.success("Rescue shock aborted", toastOptions)
           break
 
         default:
@@ -190,6 +244,8 @@ export default function executeCommand(state, dispatch, command) {
     case "SELECT":
       switch (parameter) {
         case "SHOCK":
+          dispatch({ type: actionTypes.UPDATE_RESCUE_SHOCK_ENERGY, payload: value })
+          toast.success("Rescue shock energy set to " + value + "J", toastOptions)
           break
 
         case "MAXS":

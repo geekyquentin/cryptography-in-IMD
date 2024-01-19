@@ -3,17 +3,18 @@ import deliverShockTreatment from "./shockTreatment"
 import { toast } from "react-toastify"
 import { toastOptions } from "../data"
 
-export default function rhythmID(state, heartRates, vRate, aRate) {
+export default function rhythmID(state, dispatch, heartRates, vRate, aRate) {
   const { vt1, vf } = state.ventricularRates
+  const currentHeartRate = heartRates[heartRates.length - 1]
 
   if (D1(vf, heartRates)) {
     if (D2(vf, heartRates)) {
-      deliverShockTreatment(state)
+      deliverShockTreatment(state, dispatch, currentHeartRate)
     } else {
       if (D3(vt1, heartRates)) {
         if (D4(vt1, heartRates)) {
           if (D5(vRate, aRate)) {
-            deliverShockTreatment(state)
+            deliverShockTreatment(state, dispatch, currentHeartRate)
           } else {
             if (D6(state, heartRates)) {
               toast.success("No shock advised", toastOptions)
@@ -21,7 +22,7 @@ export default function rhythmID(state, heartRates, vRate, aRate) {
               if (D7(state, heartRates)) {
                 toast.success("No shock advised", toastOptions)
               } else {
-                deliverShockTreatment(state)
+                deliverShockTreatment(state, dispatch, currentHeartRate)
               }
             }
           }
@@ -36,7 +37,7 @@ export default function rhythmID(state, heartRates, vRate, aRate) {
     if (D3(vt1, heartRates)) {
       if (D4(vt1, heartRates)) {
         if (D5(vRate, aRate)) {
-          deliverShockTreatment(state)
+          deliverShockTreatment(state, dispatch, currentHeartRate)
         } else {
           if (D6(state, heartRates)) {
             toast.success("No shock advised", toastOptions)
@@ -44,7 +45,7 @@ export default function rhythmID(state, heartRates, vRate, aRate) {
             if (D7(state, heartRates)) {
               toast.success("No shock advised", toastOptions)
             } else {
-              deliverShockTreatment(state)
+              deliverShockTreatment(state, dispatch, currentHeartRate)
             }
           }
         }

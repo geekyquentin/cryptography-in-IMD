@@ -33,8 +33,10 @@ const initialState = {
   upperHeartRate: 0,
   nightHeartRate: 0,
   minHeartRateAfterShock: 0,
-  mode: "",
+  mode: "NOT SET",
   beeperControl: true,
+  rescueShock: false,
+  rescueShockEnergy: 0,
   pulseAmp: {
     atrium: 0,
     leftVentricle: 0,
@@ -45,6 +47,7 @@ const initialState = {
     leftVentricle: 0,
     rightVentricle: 0,
   },
+  pacingThresholdSetup: 0,
   shocksPerEpisode: 0,
 }
 

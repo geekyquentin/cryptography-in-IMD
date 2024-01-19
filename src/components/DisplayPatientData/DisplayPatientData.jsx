@@ -10,13 +10,17 @@ export default function DisplayPatientData() {
       upperHeartRate,
       nightHeartRate,
       minHeartRateAfterShock,
+      mode,
       beeperControl,
+      rescueShock,
       pulseAmp,
       pulseWidth,
+      pacingThresholdSetup,
       shocksPerEpisode,
       ventricularRates,
       tcDetection,
       shockEnergy,
+      rescueShockEnergy,
       enableTCDetection,
     },
   } = useStateContext()
@@ -62,10 +66,16 @@ export default function DisplayPatientData() {
             </p>
           </div>
           <div className="stat-box__item">
+            <h3>Shocks per episode: {shocksPerEpisode}</h3>
+          </div>
+          <div className="stat-box__item">
             <h3>
               Tachycardia detection:{" "}
               {enableTCDetection ? "ENABLED" : "DISABLED"}
             </h3>
+          </div>
+          <div className="stat-box__item">
+            <h3>Beeper control: {beeperControl ? "ENABLED" : "DISABLED"}</h3>
           </div>
         </div>
 
@@ -80,8 +90,15 @@ export default function DisplayPatientData() {
             <h3>Post shock basic rate: {minHeartRateAfterShock}</h3>
           </div>
           <div className="stat-box__item">
-            <h3>Beeper control: {beeperControl ? "ENABLED" : "DISABLED"}</h3>
+            <h3>Mode: {mode}</h3>
           </div>
+          <div className="stat-box__item">
+            <h3>Rescue shock: {rescueShock ? "ENABLED" : "DISABLED"}</h3>
+          </div>
+          <div className="stat-box__item">
+            <h3>Rescue shock energy: {rescueShockEnergy}</h3>
+          </div>
+
           <div className="stat-box__item">
             <h3>Pulse amplitude setting</h3>
             <p>
@@ -99,7 +116,7 @@ export default function DisplayPatientData() {
             </p>
           </div>
           <div className="stat-box__item">
-            <h3>Shocks per episode: {shocksPerEpisode}</h3>
+            <h3>Pacing threshold setup: {pacingThresholdSetup}</h3>
           </div>
         </div>
       </div>

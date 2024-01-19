@@ -1,12 +1,29 @@
+import { UPDATE_IS_FAILED } from "../data/actionTypes"
+
 import { toast } from "react-toastify"
 import { toastOptions, defaultParams } from "../data"
 
-export default function deliverShockTreatment(state, currentHeartRate) {
+export default function deliverShockTreatment(state, dispatch, currentHeartRate) {
   const { shockEnergy, shocksPerEpisode } = state
   const { first, second, nth } = shockEnergy
 
   if (!state.enableTCDetection) {
-    toast.error("Tachycardia detection disabled", toastOptions)
+    dispatch({
+      type: UPDATE_IS_FAILED, payload: {
+        dialogHeader: "Shock Treatment Failed",
+        dialogDescription: "Tachycardia detection is disabled, shock treatment cannot be delivered without tachycardia detection."
+      }
+    })
+    return
+  }
+
+  if (!state.rescueShock) {
+    dispatch({
+      type: UPDATE_IS_FAILED, payload: {
+        dialogHeader: "Shock Treatment Failed",
+        dialogDescription: "Rescue shock is disabled, shock treatment cannot be delivered without rescue shock."
+      }
+    })
     return
   }
 
@@ -41,18 +58,18 @@ export default function deliverShockTreatment(state, currentHeartRate) {
           if (nth > second && nth <= max) {
             const nthSuccess = attemptShockTreatment(nth, 3)
             if (!nthSuccess) {
-              toast.error("Heart failure. All shock treatments unsuccessful.")
+              reportShockTreatmentFailure(dispatch, 3)
             }
           } else {
-            toast.error("Heart failure. Third shock value is out of range.")
+            reportShockTreatmentFailure(dispatch, 2)
           }
         }
       } else {
-        toast.error("Heart failure. Second shock value is out of range.")
+        reportShockTreatmentFailure(dispatch, 1)
       }
     }
   } else {
-    toast.error("Heart failure. First shock value is out of range.")
+    reportShockTreatmentFailure(dispatch, 0)
   }
 }
 
@@ -68,4 +85,28 @@ const calculateProbability = (currentHeartRate, tachycardiaDetectionRate, shockV
   )
 
   return Math.min(probability, 1)
+}
+
+const reportShockTreatmentFailure = (dispatch, iteration) => {
+  let dialogDescription = ""
+  switch (iteration) {
+    case 1:
+      dialogDescription = "Second shock is out of range"
+      break
+    case 2:
+      dialogDescription = "Third shock is out of range"
+      break
+    case 3:
+      dialogDescription = "All shock treatments failed"
+      break
+    default:
+      dialogDescription = "First shock is out of range"
+  }
+
+  dispatch({
+    type: UPDATE_IS_FAILED, payload: {
+      dialogHeader: "Shock Treatment Failed",
+      dialogDescription
+    }
+  })
 }
