@@ -1,70 +1,101 @@
-# Getting Started with Create React App
+# Data Manipulation Attack Simulation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Basic Heart Rate attack
 
-## Available Scripts
+The minimum heart rate supported is set to 30 (constant) value. If the parameter is set to less than 30 and the current heart rate recorded is less than 30, we report heart failure.
 
-In the project directory, you can run:
+## Upper Heart Rate attack
 
-### `npm start`
+The upper heart rate is set to 220 (constant) value. If the parameter is set to more than 220 and the current heart rate recorded is more than 220, we report heart failure.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+**Note**: The device is programmed to perform the upper heart rate check only between 8 and 20 hours. If the current time is not between 8 and 20 hours, the upper heart rate check is not performed.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Night Heart Rate attack
 
-### `npm test`
+The night heart rate should lie between 50 and 120. If the parameter is set to less than 50 and the current heart rate recorded is less than 50, we report heart failure. If the parameter is set to more than 120 and the current heart rate recorded is more than 120, we report heart failure.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Note**: The device is programmed to perform the night heart rate check only between 0 and 4 hours. If the current time is not between 0 and 4 hours, the night heart rate check is not performed.
 
-### `npm run build`
+## Battery Depletion
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The battery depletion in the device is calculated based on the energy consumption during the delivery of shocks and pacing pulses. The code simulates the gradual reduction in battery level over time, taking into account the energy used for each pulse delivered.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**Implementation:** To simulate battery depletion, we use the following formula:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```javascript
+depletion = (amp - pacingThresholdSetup) * 0.05 + (width - 0.4) * 0.02
+```
 
-### `npm run eject`
+where:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- `amp` is the amplitude of the pacing pulse
+- `pacingThresholdSetup` is the pacing threshold setup value
+- `width` is the width of the pacing pulse
+- `depletion` is the amount of battery depletion for the pacing pulse for each of atrial, left ventricular, and right ventricular pacing pulses
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The above depletions are calculated for each pacing pulse and shock delivered. The total battery depletion is calculated by summing up the depletions for each pacing pulse and shock delivered. The total battery depletion is then subtracted from the initial battery level to get the current battery level.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Shocking mechanism
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Shocks are delivered whenever an arrhythmia is detected. When the mode is set to “Therapy On” (more about it in the next bullet point), tachycardia is detected and shock is delivered automatically. If the tachycardia detection is disabled, the programmer has to deliver the shock manually to cure tachycardia. Two possible shock deliveries are automatic and manual.
 
-## Learn More
+### Automatic Shock Delivery
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Automatic shock delivery doesn’t rely on the programmer’s availability to deliver the manual shock. This therapy depends on the first (`dose-v1`), second (`dose-v2`), and subsequent (`dose-vn`) shock energies. Every shock dose involves sending shocks a certain number of times, denoted with “Shocks per episode (`valuesh`)”. Shock per episode is the maximum number of shock doses delivered per episode.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+In the first step, shock doses of `dose-v1` are provided. If the appropriate therapy is not delivered, shock doses of `dose-v2` are given. If this still fails, shock doses of energy `dose-vn` are given. If this fails too, then we report heart failure. Each of the above doses is given `valuesh` times.
 
-### Code Splitting
+**Implementation:** Whenever the ICD detects tachycardia, it delivers the shock automatically. The shock delivery is done in the following way:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+1. The code checks the shock values (`dose-v1`, `dose-v2`, `dose-vn`) for acceptable ranges and attempts shock treatment sequentially. If any shock tretment is unsuccessful, it reports heart failure.
+2. For each episode in attempting shock treatment, we decide the outcome of the shock treatment probabilistically. For the shock dose `shockValue`, episode `episode`, and the current iteration of the shock dose `i`, we calculate the probability of success as:
 
-### Analyzing the Bundle Size
+   ```javascript
+   prob = baseProb - shockPenalty - episodePenalty - 0.001 * heartRateDifference
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+   where:
 
-### Making a Progressive Web App
+   - `baseProb` is the base probability of success, which is set to 0.8
+   - `shockPenalty` is the penalty for the shock dose, which is set to 0.02 \* `shockValue`
+   - `episodePenalty` is the penalty for the episode, which is set to 0.01 \* `episode`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+3. We generate a random number between 0 and 1. If the random number is less than the probability of success, we report success, otherwise we repeat the process for the remaining iterations of the shock dose or the remaining shock doses.
+4. If all the shock doses are unsuccessful, we report heart failure.
 
-### Advanced Configuration
+### Manual Shock Delivery
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Manual shock delivery relies on the programmer’s availability to deliver the shock.
 
-### Deployment
+**Implementation:** When the ICD detects tachycardia, it alerts the programmer about the detected tachycardia. The programmer can then deliver the shock manually. The shock delivery is done in the following way:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+1. Implementation details are yet to be decided.
 
-### `npm run build` fails to minify
+## Mode
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Shelf Mode
+
+In shelf mode, the battery consumption is constant due to the battery's standby leakage. This is a one-time-only mode, and when this is set to use by the programmer, it can’t be reverted to this mode.
+
+**Implementation:** at the beginning of the simulation, the ICD is set to be in this mode by default. Once the “Start Simulation” button is pressed, there is no going back to the Shelf Mode. Constant battery depletion starts as soon as the site loads.
+
+### Therapy Off Mode
+
+This mode is by default set when the “Start Simulation” button is pressed for the first time.
+Tachycardia detection: **OFF**.
+
+**Implementation:** when this is set to **OFF**, the **Rhythm ID** algorithm still runs. If the algorithm decides that therapy is required, ICD doesn’t deliver shock automatically, instead, manual shock therapy is administered if the medical programmer has been alerted about the detected tachyarrhythmia. More about the shock delivery methods are talked about in detail in the **Shock Delivery** section.
+
+### Therapy On Mode
+
+This is the usual mode of the ICD, which detects tachyarrhythmias and responds by delivering appropriate shock treatment.
+
+### MRI Protection Mode
+
+Tachycardia detection is disabled, beeper is disabled. Following are the methods to exit this mode:
+
+1. manually change the mode
+2. reverted after a certain timeout of a programmable value, that’s nominally set to 6 hours
+3. deliver a rescue shock
+
+Once exited, the beeper needs to be separately enabled as it doesn’t return to the previous settings.

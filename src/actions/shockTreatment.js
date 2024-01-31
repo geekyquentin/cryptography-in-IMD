@@ -29,14 +29,13 @@ export default function deliverShockTreatment(state, dispatch, currentHeartRate)
 
   const getRandomProbability = () => Math.random()
 
-  const attemptShockTreatment = (shockValue, iteration) => {
+  const attemptShockTreatment = (shockValue, episode) => {
     for (let i = 1; i <= shocksPerEpisode; i++) {
       const probability = calculateProbability(
         currentHeartRate,
         200, // TODO: need to change later, the constant value of detection rate
         shockValue,
-        shocksPerEpisode,
-        iteration
+        episode
       )
 
       if (getRandomProbability() <= probability) {
@@ -72,14 +71,14 @@ export default function deliverShockTreatment(state, dispatch, currentHeartRate)
   }
 }
 
-const calculateProbability = (currentHeartRate, tachycardiaDetectionRate, shockValue, iteration) => {
+const calculateProbability = (currentHeartRate, tachycardiaDetectionRate, shockValue, episode) => {
   const baseProbability = 0.8
   const heartRateDifference = Math.abs(currentHeartRate - tachycardiaDetectionRate)
   const shockPenalty = 0.02 * shockValue
-  const iterationPenalty = 0.01 * iteration
+  const episodePenalty = 0.01 * episode
 
   const probability = Math.max(
-    baseProbability - shockPenalty - iterationPenalty - 0.001 * heartRateDifference,
+    baseProbability - shockPenalty - episodePenalty - 0.001 * heartRateDifference,
     0
   )
 

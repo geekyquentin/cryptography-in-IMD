@@ -32,7 +32,12 @@ export default function CommandInput() {
           <div className="cmd-input__body">
             <h2 className="cmd-input__body__heading">Command interface</h2>
             <form onSubmit={handleSubmit}>
-              <input type="text" placeholder="Enter a command..." />
+              <input
+                name="cmd-input"
+                type="text"
+                placeholder="Enter a command..."
+                autoComplete="off"
+              />
             </form>
           </div>
         </div>
