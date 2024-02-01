@@ -110,8 +110,9 @@ export default function executeCommand(state, dispatch, command) {
           }
 
           dispatch({ type: UPDATE_MODE_SWITCH, payload: index })
-          handleModeSwitch(index, state, dispatch)
           toast.success("Mode switched to " + defaultParams.modes[index], toastOptions)
+
+          handleModeSwitchTimeout(state, dispatch)
           break
         }
 
@@ -304,28 +305,19 @@ export default function executeCommand(state, dispatch, command) {
   }
 }
 
-function handleModeSwitch(mode, state, dispatch) {
-  switch (mode) {
-    case 1:
-      dispatch({ type: actionTypes.UPDATE_ENABLE_TC_DETECTION, payload: false })
-      break
-    case 2:
-      console.log("here")
-      dispatch({ type: actionTypes.UPDATE_ENABLE_TC_DETECTION, payload: true })
-      break
-    case 3:
-      dispatch({ type: actionTypes.UPDATE_ENABLE_TC_DETECTION, payload: false })
-      dispatch({ type: actionTypes.UPDATE_BEEPER_CONTROL, payload: false })
+function handleModeSwitchTimeout(state, dispatch) {
+  const maxTime = defaultParams.mriTimeout[state.mriSwitchTimeout] * 1000
 
-      const timeout = defaultParams.mriTimeout[state.mriSwitchTimeout] * 1000
-      setTimeout(() => {
-        const switchModeIdx = defaultParams.mriSwitchMode
-        dispatch({ type: actionTypes.UPDATE_MODE_SWITCH, payload: switchModeIdx })
-        handleModeSwitch(switchModeIdx, state, dispatch)
-        toast.success("Mode switched to " + defaultParams.modes[switchModeIdx], toastOptions)
-      }, timeout)
-      break
-    default:
-      break
+  if (state.modeSwitchTimerID) {
+    clearTimeout(state.modeSwitchTimerID)
+    console.log(state.modeSwitchTimerID)
   }
+
+  const timerID = setTimeout(() => {
+    const switchModeIndex = defaultParams.mriSwitchMode
+    dispatch({ type: actionTypes.UPDATE_MODE_SWITCH, payload: switchModeIndex })
+    toast.success("Mode switched to " + defaultParams.modes[switchModeIndex], toastOptions)
+  }, maxTime)
+
+  dispatch({ type: actionTypes.UPDATE_MODE_SWITCH_TIMER_ID, payload: timerID })
 }

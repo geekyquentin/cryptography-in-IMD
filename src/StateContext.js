@@ -35,6 +35,7 @@ const initialState = {
   minHeartRateAfterShock: 0,
   therapyMode: 0,
   mriSwitchTimeout: 0,
+  modeSwitchTimerID: null,
   beeperControl: true,
   rescueShock: false,
   rescueShockEnergy: 0,

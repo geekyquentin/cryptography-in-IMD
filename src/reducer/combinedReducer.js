@@ -4,9 +4,10 @@ const combinedReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.UPDATE_IS_RUNNING:
       return { ...state, isRunning: action.payload }
-    case actionTypes.UPDATE_IS_FAILED:
+    case actionTypes.UPDATE_IS_FAILED: {
       const { dialogHeader, dialogDescription } = action.payload
       return { ...state, isFailed: true, isRunning: false, dialogHeader, dialogDescription }
+    }
     case actionTypes.RESTART_WORKFLOW:
       return { ...state, isFailed: false, dialogHeader: "", dialogDescription: "", therapyMode: 0 }
     case actionTypes.UPDATE_MIN_HEART_RATE:
@@ -26,7 +27,20 @@ const combinedReducer = (state, action) => {
     case actionTypes.UPDATE_MIN_HEART_RATE_AFTER_SHOCK:
       return { ...state, minHeartRateAfterShock: action.payload }
     case actionTypes.UPDATE_MODE_SWITCH:
-      return { ...state, therapyMode: action.payload }
+      switch (action.payload) {
+        case 0:
+          return { ...state, therapyMode: 0, }
+        case 1:
+          return { ...state, therapyMode: 1, enableTCDetection: false, }
+        case 2:
+          return { ...state, therapyMode: 2, enableTCDetection: true }
+        case 3:
+          return { ...state, therapyMode: 3, enableTCDetection: false, beepControl: false, }
+        default:
+          return { ...state, therapyMode: action.payload }
+      }
+    case actionTypes.UPDATE_MODE_SWITCH_TIMER_ID:
+      return { ...state, modeSwitchTimerID: action.payload }
     case actionTypes.UPDATE_MRI_SWITCH_TIMEOUT:
       return { ...state, mriSwitchTimeout: action.payload }
     case actionTypes.UPDATE_BEEPER_CONTROL:
