@@ -1,4 +1,4 @@
-import { UPDATE_IS_FAILED } from "../data/actionTypes"
+import { START_MANUAL_SHOCK, UPDATE_IS_FAILED } from "../data/actionTypes"
 
 import { toast } from "react-toastify"
 import { toastOptions, defaultParams } from "../data"
@@ -7,27 +7,30 @@ export default function deliverShockTreatment(state, dispatch, currentHeartRate)
   const { shockEnergy, shocksPerEpisode } = state
   const { first, second, nth } = shockEnergy
 
-  if (!state.enableTCDetection) {
-    toast.warning("Tachycardia detected", toastOptions)
-    // here start a timer to wait for the user to manually deliver shock treatment
-    attemptManualShockTreatment()
+  if (state.manualShockStart) {
+    return
   }
 
-  if (!state.rescueShock) {
+  if (!state.enableTCDetection) {
+    if (state.beeperControl) {
+      toast.warning("Tachycardia detected, enabling manual shock", toastOptions)
+      dispatch({ type: START_MANUAL_SHOCK, payload: currentHeartRate })
+      return
+    }
+
     dispatch({
       type: UPDATE_IS_FAILED, payload: {
-        dialogHeader: "Shock Treatment Failed",
-        dialogDescription: "Rescue shock is disabled, shock treatment cannot be delivered without rescue shock."
+        dialogHeader: "Shock Treatment was not delivered",
+        dialogDescription: "Tachycardia detected, but the beeper is disabled which prevents the manual shock treatment from being delivered"
       }
     })
-    return
   }
 
   const getRandomProbability = () => Math.random()
 
   const attemptShockTreatment = (shockValue, episode) => {
     for (let i = 1; i <= shocksPerEpisode; i++) {
-      const probability = calculateProbability(
+      const probability = calculateAutomaticShockProbability(
         currentHeartRate,
         200, // TODO: need to change later, the constant value of detection rate
         shockValue,
@@ -67,7 +70,7 @@ export default function deliverShockTreatment(state, dispatch, currentHeartRate)
   }
 }
 
-const calculateProbability = (currentHeartRate, tachycardiaDetectionRate, shockValue, episode) => {
+const calculateAutomaticShockProbability = (currentHeartRate, tachycardiaDetectionRate, shockValue, episode) => {
   const baseProbability = 0.8
   const heartRateDifference = Math.abs(currentHeartRate - tachycardiaDetectionRate)
   const shockPenalty = 0.02 * shockValue
@@ -79,10 +82,6 @@ const calculateProbability = (currentHeartRate, tachycardiaDetectionRate, shockV
   )
 
   return Math.min(probability, 1)
-}
-
-const attemptManualShockTreatment = () => {
-  // do something here
 }
 
 const reportShockTreatmentFailure = (dispatch, iteration) => {

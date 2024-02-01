@@ -292,9 +292,14 @@ export default function executeCommand(state, dispatch, command) {
           toast.success("Rescue shock energy set to " + value + "J", toastOptions)
           break
 
+        case "MSHK":
+          dispatch({ type: actionTypes.UPDATE_MANUAL_SHOCK_ENERGY, payload: value })
+          toast.success("Manual shock energy set to " + value + "J", toastOptions)
+          break
+
         case "MAXS":
           dispatch({ type: UPDATE_SHOCKS_PER_EPISODE, payload: value })
-          toast.success("Shocks per episode set to " + value + "J", toastOptions)
+          toast.success("Shocks per episode set to " + value, toastOptions)
           break
 
         default:

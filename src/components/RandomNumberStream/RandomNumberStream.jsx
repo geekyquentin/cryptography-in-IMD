@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react"
 import { useStateContext } from "../../StateContext"
+import { ManualShock } from ".."
 import { defaultParams } from "../../data"
-import "./RandomNumberStream.scss"
 import { simulateICD } from "../../actions"
+
+import "./RandomNumberStream.scss"
 
 export default function RandomNumberStream() {
   const { state, dispatch } = useStateContext()
@@ -51,6 +53,8 @@ export default function RandomNumberStream() {
     return Math.floor(Math.random() * (max - min + 1) + min)
   }
 
+  // we do not sanity check if the simulation is started or not, because
+  // the stream length takes care of it
   useEffect(() => {
     if (stream.length <= 10) {
       return
@@ -66,7 +70,7 @@ export default function RandomNumberStream() {
       avRates[0],
       avRates[1]
     )
-  }, [stream, state, avRates])
+  }, [stream, state, avRates, dispatch])
 
   return (
     <div className="random-number-stream">
@@ -78,6 +82,7 @@ export default function RandomNumberStream() {
           value={intervalTime}
           onChange={(e) => setIntervalTime(e.target.value)}
         />
+        <ManualShock />
       </div>
       <div className="number-stream">
         {stream.map((item) => (

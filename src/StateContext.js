@@ -10,6 +10,9 @@ const initialState = {
   isFailed: false,
   dialogHeader: "",
   dialogDescription: "",
+  manualShockStart: false,
+
+  currentHeartRate: 0,
 
   // ICD parameters
   batteryLevel: 100,
@@ -40,6 +43,7 @@ const initialState = {
   beeperControl: true,
   rescueShock: false,
   rescueShockEnergy: 0,
+  manualShockEnergy: 0,
   pulseAmp: {
     atrium: 0,
     leftVentricle: 0,

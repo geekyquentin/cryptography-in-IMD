@@ -11,8 +11,15 @@ const combinedReducer = (state, action) => {
       const { dialogHeader, dialogDescription } = action.payload
       return { ...state, isFailed: true, isRunning: false, dialogHeader, dialogDescription }
     }
+    case actionTypes.START_MANUAL_SHOCK:
+      return { ...state, manualShockStart: true, currentHeartRate: action.payload }
+    case actionTypes.STOP_MANUAL_SHOCK:
+      return { ...state, manualShockStart: false }
     case actionTypes.RESTART_WORKFLOW:
-      return { ...state, isFailed: false, dialogHeader: "", dialogDescription: "", therapyMode: 0, batteryLevel: maxBatteryLevel }
+      return { ...state, isFailed: false, manualShockStart: false, dialogHeader: "", dialogDescription: "", therapyMode: 0, batteryLevel: maxBatteryLevel }
+
+    // case actionTypes.UPDATE_CURRENT_HEART_RATE:
+    //   return { ...state, currentHeartRate: action.payload }
 
     // ICD parameters
     case actionTypes.UPDATE_BATTERY_LEVEL:
@@ -56,6 +63,8 @@ const combinedReducer = (state, action) => {
       return { ...state, rescueShock: action.payload }
     case actionTypes.UPDATE_RESCUE_SHOCK_ENERGY:
       return { ...state, rescueShockEnergy: action.payload }
+    case actionTypes.UPDATE_MANUAL_SHOCK_ENERGY:
+      return { ...state, manualShockEnergy: action.payload }
     case actionTypes.UPDATE_PULSE_AMP:
       return { ...state, pulseAmp: { ...state.pulseAmp, ...action.payload } }
     case actionTypes.UPDATE_PULSE_WIDTH:

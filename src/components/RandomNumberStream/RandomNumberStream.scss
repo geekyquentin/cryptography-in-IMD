@@ -6,6 +6,15 @@
   margin-left: 1rem;
 }
 
+.stream-settings {
+  display: flex;
+  flex-direction: row;
+
+  & > input {
+    margin-right: 1rem;
+  }
+}
+
 .number-stream {
   position: relative;
   width: 100%;

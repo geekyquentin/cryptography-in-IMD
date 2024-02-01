@@ -23,6 +23,7 @@ export default function DisplayPatientData() {
       tcDetection,
       shockEnergy,
       rescueShockEnergy,
+      manualShockEnergy,
       enableTCDetection,
     },
   } = useStateContext()
@@ -68,7 +69,14 @@ export default function DisplayPatientData() {
             </p>
           </div>
           <div className="stat-box__item">
-            <h3>Shocks per episode: {shocksPerEpisode}</h3>
+            <h3>
+              Mode: <i>{defaultParams.modes[therapyMode]}</i>
+            </h3>
+          </div>
+          <div className="stat-box__item">
+            <h3>
+              MRI Switch Timeout: {defaultParams.mriTimeout[mriSwitchTimeout]}
+            </h3>
           </div>
           <div className="stat-box__item">
             <h3>
@@ -92,20 +100,16 @@ export default function DisplayPatientData() {
             <h3>Post shock basic rate: {minHeartRateAfterShock}</h3>
           </div>
           <div className="stat-box__item">
-            <h3>
-              Mode: <i>{defaultParams.modes[therapyMode]}</i>
-            </h3>
-          </div>
-          <div className="stat-box__item">
-            <h3>
-              MRI Switch Timeout: {defaultParams.mriTimeout[mriSwitchTimeout]}
-            </h3>
-          </div>
-          <div className="stat-box__item">
             <h3>Rescue shock: {rescueShock ? "ENABLED" : "DISABLED"}</h3>
           </div>
           <div className="stat-box__item">
             <h3>Rescue shock energy: {rescueShockEnergy}</h3>
+          </div>
+          <div className="stat-box__item">
+            <h3>Manual shock energy: {manualShockEnergy}</h3>
+          </div>
+          <div className="stat-box__item">
+            <h3>Shocks per episode: {shocksPerEpisode}</h3>
           </div>
 
           <div className="stat-box__item">
