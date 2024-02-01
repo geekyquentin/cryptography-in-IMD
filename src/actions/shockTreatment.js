@@ -8,13 +8,9 @@ export default function deliverShockTreatment(state, dispatch, currentHeartRate)
   const { first, second, nth } = shockEnergy
 
   if (!state.enableTCDetection) {
-    dispatch({
-      type: UPDATE_IS_FAILED, payload: {
-        dialogHeader: "Shock Treatment Failed",
-        dialogDescription: "Tachycardia detection is disabled, shock treatment cannot be delivered without tachycardia detection."
-      }
-    })
-    return
+    toast.warning("Tachycardia detected", toastOptions)
+    // here start a timer to wait for the user to manually deliver shock treatment
+    attemptManualShockTreatment()
   }
 
   if (!state.rescueShock) {
@@ -83,6 +79,10 @@ const calculateProbability = (currentHeartRate, tachycardiaDetectionRate, shockV
   )
 
   return Math.min(probability, 1)
+}
+
+const attemptManualShockTreatment = () => {
+  // do something here
 }
 
 const reportShockTreatmentFailure = (dispatch, iteration) => {

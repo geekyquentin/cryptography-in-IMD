@@ -1,5 +1,5 @@
 import { useStateContext } from "../../StateContext"
-import { UPDATE_IS_RUNNING } from "../../data/actionTypes"
+import { UPDATE_IS_RUNNING, UPDATE_MODE_SWITCH } from "../../data/actionTypes"
 
 import "./Navbar.scss"
 
@@ -9,6 +9,7 @@ const Navbar = () => {
 
   const toggleSimulation = () => {
     dispatch({ type: UPDATE_IS_RUNNING, payload: !isRunning })
+    dispatch({ type: UPDATE_MODE_SWITCH, payload: !isRunning ? 1 : 0 })
   }
 
   return (

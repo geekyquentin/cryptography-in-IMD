@@ -11,8 +11,12 @@ export default function executeCommand(state, dispatch, command) {
   }
 
   const {
-    minHeartRate,
-  } = defaultParams
+    pacingThresholdSetup,
+    therapyMode,
+    rescueShock,
+    beeperControl,
+    mriSwitchTimeout
+  } = state
   const {
     UPDATE_MIN_HEART_RATE,
     UPDATE_VENTRICULAR_RATES,
@@ -35,8 +39,8 @@ export default function executeCommand(state, dispatch, command) {
     case "SET":
       switch (parameter) {
         case "BT":
-          if (minHeartRate.max < value) {
-            toast.error("Min heart rate must be less than " + minHeartRate.max, toastOptions)
+          if (defaultParams.minHeartRate.max < value) {
+            toast.error("Min heart rate must be less than " + defaultParams.minHeartRate.max, toastOptions)
             return
           }
           dispatch({ type: UPDATE_MIN_HEART_RATE, payload: value })
@@ -93,14 +97,43 @@ export default function executeCommand(state, dispatch, command) {
           toast.success("Minimum post shock rate set to " + value, toastOptions)
           break
 
-        case "MST":
-          dispatch({ type: UPDATE_MODE_SWITCH, payload: value })
-          toast.success("Mode switched to " + value, toastOptions)
+        case "MST": {
+          const index = Number(value)
+          if (index === therapyMode || therapyMode === 0) {
+            return
+          }
+
+          const min = 1, max = defaultParams.modes.length - 1
+          if (index < min || index > max) {
+            toast.error("Mode must be between " + min + " and " + max, toastOptions)
+            return
+          }
+
+          dispatch({ type: UPDATE_MODE_SWITCH, payload: index })
+          handleModeSwitch(index, state, dispatch)
+          toast.success("Mode switched to " + defaultParams.modes[index], toastOptions)
           break
+        }
+
+        case "MSTO": {
+          const index = defaultParams.mriTimeout.indexOf(Number(value))
+          if (index === -1) {
+            toast.error("Invalid MRI switch timeout value", toastOptions)
+            return
+          }
+
+          if (index === mriSwitchTimeout) {
+            return
+          }
+
+          dispatch({ type: actionTypes.UPDATE_MRI_SWITCH_TIMEOUT, payload: index })
+          toast.success("MRI switch timeout set to " + value + " hours", toastOptions)
+          break
+        }
 
         case "PA":
-          if (value < state.pacingThresholdSetup) {
-            toast.error("Pacing amplitude must be greater than " + state.pacingThresholdSetup, toastOptions)
+          if (value < pacingThresholdSetup) {
+            toast.error("Pacing amplitude must be greater than " + pacingThresholdSetup, toastOptions)
             return
           }
 
@@ -109,8 +142,8 @@ export default function executeCommand(state, dispatch, command) {
           break
 
         case "LVA":
-          if (value < state.pacingThresholdSetup) {
-            toast.error("Pacing amplitude must be greater than " + state.pacingThresholdSetup, toastOptions)
+          if (value < pacingThresholdSetup) {
+            toast.error("Pacing amplitude must be greater than " + pacingThresholdSetup, toastOptions)
             return
           }
 
@@ -119,8 +152,8 @@ export default function executeCommand(state, dispatch, command) {
           break
 
         case "RVA":
-          if (value < state.pacingThresholdSetup) {
-            toast.error("Pacing amplitude must be greater than " + state.pacingThresholdSetup, toastOptions)
+          if (value < pacingThresholdSetup) {
+            toast.error("Pacing amplitude must be greater than " + pacingThresholdSetup, toastOptions)
             return
           }
 
@@ -179,7 +212,21 @@ export default function executeCommand(state, dispatch, command) {
       switch (parameter) {
         case "DET":
           dispatch({ type: UPDATE_ENABLE_TC_DETECTION, payload: value === "ON" ? true : false })
-          toast.success("Tachycardia detection set to " + value, toastOptions)
+          toast.success("Tachycardia detection is enabled", toastOptions)
+          break
+
+        case "BEEP":
+          if (beeperControl) {
+            return
+          }
+
+          if (therapyMode === 3) {
+            toast.error(`Beeper control can't be enabled in ${defaultParams.modes[therapyMode]}`, toastOptions)
+            return
+          }
+
+          dispatch({ type: UPDATE_BEEPER_CONTROL, payload: true })
+          toast.success("Beeper control is enabled", toastOptions)
           break
 
         default:
@@ -191,7 +238,7 @@ export default function executeCommand(state, dispatch, command) {
       switch (parameter) {
         case "BEEP":
           dispatch({ type: UPDATE_BEEPER_CONTROL, payload: false })
-          toast.success("Beeper control disabled", toastOptions)
+          toast.success("Beeper control is disabled", toastOptions)
           break
 
         default:
@@ -202,7 +249,7 @@ export default function executeCommand(state, dispatch, command) {
     case "START":
       switch (parameter) {
         case "RSHK":
-          if (state.rescueShock) {
+          if (rescueShock) {
             return
           }
 
@@ -222,7 +269,7 @@ export default function executeCommand(state, dispatch, command) {
     case "ABORT":
       switch (parameter) {
         case "RSHK":
-          if (!state.rescueShock) {
+          if (!rescueShock) {
             return
           }
 
@@ -254,5 +301,31 @@ export default function executeCommand(state, dispatch, command) {
 
     default:
       toast.error("Invalid action", toastOptions)
+  }
+}
+
+function handleModeSwitch(mode, state, dispatch) {
+  switch (mode) {
+    case 1:
+      dispatch({ type: actionTypes.UPDATE_ENABLE_TC_DETECTION, payload: false })
+      break
+    case 2:
+      console.log("here")
+      dispatch({ type: actionTypes.UPDATE_ENABLE_TC_DETECTION, payload: true })
+      break
+    case 3:
+      dispatch({ type: actionTypes.UPDATE_ENABLE_TC_DETECTION, payload: false })
+      dispatch({ type: actionTypes.UPDATE_BEEPER_CONTROL, payload: false })
+
+      const timeout = defaultParams.mriTimeout[state.mriSwitchTimeout] * 1000
+      setTimeout(() => {
+        const switchModeIdx = defaultParams.mriSwitchMode
+        dispatch({ type: actionTypes.UPDATE_MODE_SWITCH, payload: switchModeIdx })
+        handleModeSwitch(switchModeIdx, state, dispatch)
+        toast.success("Mode switched to " + defaultParams.modes[switchModeIdx], toastOptions)
+      }, timeout)
+      break
+    default:
+      break
   }
 }

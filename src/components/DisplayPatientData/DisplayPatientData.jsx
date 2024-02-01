@@ -1,5 +1,6 @@
 import { useStateContext } from "../../StateContext"
 import { BatteryData } from "../"
+import { defaultParams } from "../../data"
 
 import "./DisplayPatientData.scss"
 
@@ -10,7 +11,8 @@ export default function DisplayPatientData() {
       upperHeartRate,
       nightHeartRate,
       minHeartRateAfterShock,
-      mode,
+      therapyMode,
+      mriSwitchTimeout,
       beeperControl,
       rescueShock,
       pulseAmp,
@@ -90,7 +92,14 @@ export default function DisplayPatientData() {
             <h3>Post shock basic rate: {minHeartRateAfterShock}</h3>
           </div>
           <div className="stat-box__item">
-            <h3>Mode: {mode}</h3>
+            <h3>
+              Mode: <i>{defaultParams.modes[therapyMode]}</i>
+            </h3>
+          </div>
+          <div className="stat-box__item">
+            <h3>
+              MRI Switch Timeout: {defaultParams.mriTimeout[mriSwitchTimeout]}
+            </h3>
           </div>
           <div className="stat-box__item">
             <h3>Rescue shock: {rescueShock ? "ENABLED" : "DISABLED"}</h3>

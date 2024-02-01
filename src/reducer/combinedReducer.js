@@ -8,7 +8,7 @@ const combinedReducer = (state, action) => {
       const { dialogHeader, dialogDescription } = action.payload
       return { ...state, isFailed: true, isRunning: false, dialogHeader, dialogDescription }
     case actionTypes.RESTART_WORKFLOW:
-      return { ...state, isFailed: false, dialogHeader: "", dialogDescription: "" }
+      return { ...state, isFailed: false, dialogHeader: "", dialogDescription: "", therapyMode: 0 }
     case actionTypes.UPDATE_MIN_HEART_RATE:
       return { ...state, minHeartRate: action.payload }
     case actionTypes.UPDATE_VENTRICULAR_RATES:
@@ -26,7 +26,9 @@ const combinedReducer = (state, action) => {
     case actionTypes.UPDATE_MIN_HEART_RATE_AFTER_SHOCK:
       return { ...state, minHeartRateAfterShock: action.payload }
     case actionTypes.UPDATE_MODE_SWITCH:
-      return { ...state, mode: action.payload }
+      return { ...state, therapyMode: action.payload }
+    case actionTypes.UPDATE_MRI_SWITCH_TIMEOUT:
+      return { ...state, mriSwitchTimeout: action.payload }
     case actionTypes.UPDATE_BEEPER_CONTROL:
       return { ...state, beeperControl: action.payload }
     case actionTypes.UPDATE_RESCUE_SHOCK:

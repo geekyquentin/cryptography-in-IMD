@@ -31,10 +31,14 @@ const defaultParams = {
   },
   upperHeartRate: 220,
   modes: [
-    "AAI(R)",
-    "VVI(R)",
-    "DDD(R)",
-  ]
+    "Shelf Mode",
+    "Therapy Off Mode",
+    "Therapy On Mode",
+    "MRI Protection Mode"
+  ],
+  defaultMode: 0,
+  mriSwitchMode: 2,
+  mriTimeout: [6, 9, 12, 24],
 }
 
 export default defaultParams
