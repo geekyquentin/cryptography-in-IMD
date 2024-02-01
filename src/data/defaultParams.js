@@ -39,6 +39,8 @@ const defaultParams = {
   defaultMode: 0,
   mriSwitchMode: 2,
   mriTimeout: [6, 9, 12, 24],
+  maxBatteryLevel: 100,
+  defaultDepletionRate: 0.1,
 }
 
 export default defaultParams

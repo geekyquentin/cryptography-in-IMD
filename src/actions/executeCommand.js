@@ -112,7 +112,9 @@ export default function executeCommand(state, dispatch, command) {
           dispatch({ type: UPDATE_MODE_SWITCH, payload: index })
           toast.success("Mode switched to " + defaultParams.modes[index], toastOptions)
 
-          handleModeSwitchTimeout(state, dispatch)
+          if (index === max) {
+            handleModeSwitchTimeout(state, dispatch)
+          }
           break
         }
 
@@ -310,7 +312,6 @@ function handleModeSwitchTimeout(state, dispatch) {
 
   if (state.modeSwitchTimerID) {
     clearTimeout(state.modeSwitchTimerID)
-    console.log(state.modeSwitchTimerID)
   }
 
   const timerID = setTimeout(() => {

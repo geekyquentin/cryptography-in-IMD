@@ -12,6 +12,7 @@ const initialState = {
   dialogDescription: "",
 
   // ICD parameters
+  batteryLevel: 100,
   minHeartRate: 0,
   ventricularRates: {
     vt1: 0,

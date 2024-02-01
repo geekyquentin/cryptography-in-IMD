@@ -3,7 +3,7 @@ import { UPDATE_IS_FAILED } from "../data/actionTypes"
 import { toast } from "react-toastify"
 import { toastOptions } from "../data"
 
-export default function simulateBattery(beeperControl, dispatch, batteryLevel) {
+export default function simulateBattery(beeperControl, batteryLevel, dispatch) {
   if (batteryLevel <= 20 && beeperControl) {
     toast.error("Battery is low", toastOptions)
   }

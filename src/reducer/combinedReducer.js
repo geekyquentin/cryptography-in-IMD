@@ -1,6 +1,9 @@
 import * as actionTypes from "../data/actionTypes"
+import { defaultParams } from "../data"
 
 const combinedReducer = (state, action) => {
+  const { maxBatteryLevel } = defaultParams
+
   switch (action.type) {
     case actionTypes.UPDATE_IS_RUNNING:
       return { ...state, isRunning: action.payload }
@@ -9,7 +12,11 @@ const combinedReducer = (state, action) => {
       return { ...state, isFailed: true, isRunning: false, dialogHeader, dialogDescription }
     }
     case actionTypes.RESTART_WORKFLOW:
-      return { ...state, isFailed: false, dialogHeader: "", dialogDescription: "", therapyMode: 0 }
+      return { ...state, isFailed: false, dialogHeader: "", dialogDescription: "", therapyMode: 0, batteryLevel: maxBatteryLevel }
+
+    // ICD parameters
+    case actionTypes.UPDATE_BATTERY_LEVEL:
+      return { ...state, batteryLevel: action.payload }
     case actionTypes.UPDATE_MIN_HEART_RATE:
       return { ...state, minHeartRate: action.payload }
     case actionTypes.UPDATE_VENTRICULAR_RATES:
