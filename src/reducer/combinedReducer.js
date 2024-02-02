@@ -15,6 +15,10 @@ const combinedReducer = (state, action) => {
       return { ...state, manualShockStart: true, currentHeartRate: action.payload }
     case actionTypes.STOP_MANUAL_SHOCK:
       return { ...state, manualShockStart: false }
+    case actionTypes.START_RESCUE_SHOCK:
+      return { ...state, rescueShockStart: true, therapyMode: defaultMode }
+    case actionTypes.STOP_RESCUE_SHOCK:
+      return { ...state, rescueShockStart: false }
     case actionTypes.RESTART_WORKFLOW:
       return { ...state, isFailed: false, manualShockStart: false, dialogHeader: "", dialogDescription: "", therapyMode: 0, batteryLevel: maxBatteryLevel }
 
@@ -49,7 +53,7 @@ const combinedReducer = (state, action) => {
         case 2:
           return { ...state, therapyMode: 2, enableTCDetection: true }
         case 3:
-          return { ...state, therapyMode: 3, enableTCDetection: false, beepControl: false, }
+          return { ...state, therapyMode: 3, enableTCDetection: false, beeperControl: false, }
         default:
           return { ...state, therapyMode: action.payload }
       }
@@ -59,10 +63,6 @@ const combinedReducer = (state, action) => {
       return { ...state, mriSwitchTimeout: action.payload }
     case actionTypes.UPDATE_BEEPER_CONTROL:
       return { ...state, beeperControl: action.payload }
-    case actionTypes.UPDATE_RESCUE_SHOCK:
-      return { ...state, rescueShock: action.payload }
-    case actionTypes.UPDATE_RESCUE_SHOCK_ENERGY:
-      return { ...state, rescueShockEnergy: action.payload }
     case actionTypes.UPDATE_MANUAL_SHOCK_ENERGY:
       return { ...state, manualShockEnergy: action.payload }
     case actionTypes.UPDATE_PULSE_AMP:

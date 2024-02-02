@@ -13,18 +13,20 @@ export default function executeCommand(state, dispatch, command) {
   const {
     pacingThresholdSetup,
     therapyMode,
-    rescueShock,
+    rescueShockStart,
     beeperControl,
     mriSwitchTimeout
   } = state
   const {
+    START_RESCUE_SHOCK,
+    STOP_RESCUE_SHOCK,
+
     UPDATE_MIN_HEART_RATE,
     UPDATE_VENTRICULAR_RATES,
     UPDATE_TC_DETECTION,
     UPDATE_UPPER_HEART_RATE,
     UPDATE_NIGHT_HEART_RATE,
     UPDATE_MIN_HEART_RATE_AFTER_SHOCK,
-    UPDATE_RESCUE_SHOCK,
     UPDATE_MODE_SWITCH,
     UPDATE_PULSE_AMP,
     UPDATE_PULSE_WIDTH,
@@ -252,11 +254,11 @@ export default function executeCommand(state, dispatch, command) {
     case "START":
       switch (parameter) {
         case "RSHK":
-          if (rescueShock) {
+          if (rescueShockStart) {
             return
           }
 
-          dispatch({ type: UPDATE_RESCUE_SHOCK, payload: true })
+          dispatch({ type: START_RESCUE_SHOCK })
           toast.success("Rescue shock started", toastOptions)
           break
 
@@ -272,11 +274,11 @@ export default function executeCommand(state, dispatch, command) {
     case "ABORT":
       switch (parameter) {
         case "RSHK":
-          if (!rescueShock) {
+          if (!rescueShockStart) {
             return
           }
 
-          dispatch({ type: UPDATE_RESCUE_SHOCK, payload: false })
+          dispatch({ type: STOP_RESCUE_SHOCK })
           toast.success("Rescue shock aborted", toastOptions)
           break
 
@@ -288,8 +290,7 @@ export default function executeCommand(state, dispatch, command) {
     case "SELECT":
       switch (parameter) {
         case "SHOCK":
-          dispatch({ type: actionTypes.UPDATE_RESCUE_SHOCK_ENERGY, payload: value })
-          toast.success("Rescue shock energy set to " + value + "J", toastOptions)
+          // defibrillation testing shock
           break
 
         case "MSHK":

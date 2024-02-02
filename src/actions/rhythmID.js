@@ -1,4 +1,4 @@
-import deliverShockTreatment from "./shockTreatment"
+import deliverShockTreatment from "./autoShockTreatment"
 
 import { toast } from "react-toastify"
 import { toastOptions } from "../data"

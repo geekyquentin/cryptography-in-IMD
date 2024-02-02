@@ -14,7 +14,7 @@ export default function DisplayPatientData() {
       therapyMode,
       mriSwitchTimeout,
       beeperControl,
-      rescueShock,
+      rescueShockStart,
       pulseAmp,
       pulseWidth,
       pacingThresholdSetup,
@@ -100,7 +100,7 @@ export default function DisplayPatientData() {
             <h3>Post shock basic rate: {minHeartRateAfterShock}</h3>
           </div>
           <div className="stat-box__item">
-            <h3>Rescue shock: {rescueShock ? "ENABLED" : "DISABLED"}</h3>
+            <h3>Rescue shock: {rescueShockStart ? "ENABLED" : "DISABLED"}</h3>
           </div>
           <div className="stat-box__item">
             <h3>Rescue shock energy: {rescueShockEnergy}</h3>

@@ -8,8 +8,6 @@ The following is a simulation of the data manipulation attack on an ICD.
 
 ## Tachycardia detection - Rhythm ID algorithm
 
-TODO here
-
 ## Basic Parameters Working and Attack
 
 ### Basic Heart Rate attack

@@ -40,7 +40,7 @@ const calculateThresholdShockEnergy = (currentHeartRate) => {
   return thresholdShockEnergy
 }
 
-const ManualShock = () => {
+const RescueShock = () => {
   const { state, dispatch } = useStateContext()
   const [isManualButtonDisabled, setIsManualButtonDisabled] = useState(false)
   const [shocksGiven, setShocksGiven] = useState(0)
@@ -148,4 +148,4 @@ const ManualShock = () => {
   )
 }
 
-export default ManualShock
+export default RescueShock

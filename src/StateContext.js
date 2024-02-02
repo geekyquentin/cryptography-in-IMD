@@ -2,6 +2,7 @@ import { createContext, useContext, useReducer } from "react"
 // import parameterReducer from "./reducer/parameterReducer"
 // import workflowReducer from "./reducer/workflowReducer"
 import combinedReducer from "./reducer/combinedReducer"
+import { defaultParams } from "./data"
 
 const StateContext = createContext()
 
@@ -41,8 +42,8 @@ const initialState = {
   mriSwitchTimeout: 0,
   modeSwitchTimerID: null,
   beeperControl: true,
-  rescueShock: false,
-  rescueShockEnergy: 0,
+  rescueShockStart: false,
+  rescueShockEnergy: defaultParams.shockDose.max,
   manualShockEnergy: 0,
   pulseAmp: {
     atrium: 0,
