@@ -5,6 +5,7 @@ import { defaultParams } from "../../data/"
 
 import { toast } from "react-toastify"
 import { toastOptions } from "../../data"
+import { depleteBatteryDueToShock } from "../../actions"
 
 const MANUAL_SHOCK_TIMEOUT = 5000
 
@@ -41,7 +42,7 @@ const calculateThresholdShockEnergy = (currentHeartRate) => {
 
 const ManualShock = () => {
   const { state, dispatch } = useStateContext()
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+  const [isManualButtonDisabled, setIsManualButtonDisabled] = useState(false)
   const [shocksGiven, setShocksGiven] = useState(0)
   const timeoutRef = useRef(null)
 
@@ -50,10 +51,12 @@ const ManualShock = () => {
     currentHeartRate,
     manualShockEnergy,
     shocksPerEpisode,
+    batteryLevel,
   } = state
 
   const handleManualShock = useCallback(() => {
-    setIsButtonDisabled(true)
+    setIsManualButtonDisabled(true)
+    depleteBatteryDueToShock(batteryLevel, dispatch, manualShockEnergy)
 
     const probability = calculateProbability(
       currentHeartRate,
@@ -101,7 +104,7 @@ const ManualShock = () => {
     }
 
     setTimeout(() => {
-      setIsButtonDisabled(false)
+      setIsManualButtonDisabled(false)
     }, 1000)
   }, [
     currentHeartRate,
@@ -137,7 +140,7 @@ const ManualShock = () => {
     <button
       className="btn-secondary-sm"
       onClick={handleManualShock}
-      disabled={isButtonDisabled}
+      disabled={isManualButtonDisabled}
     >
       Shock
     </button>

@@ -2,7 +2,7 @@ import * as actionTypes from "../data/actionTypes"
 import { defaultParams } from "../data"
 
 const combinedReducer = (state, action) => {
-  const { maxBatteryLevel } = defaultParams
+  const { maxBatteryLevel, defaultMode } = defaultParams
 
   switch (action.type) {
     case actionTypes.UPDATE_IS_RUNNING:

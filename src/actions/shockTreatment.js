@@ -2,6 +2,7 @@ import { START_MANUAL_SHOCK, UPDATE_IS_FAILED } from "../data/actionTypes"
 
 import { toast } from "react-toastify"
 import { toastOptions, defaultParams } from "../data"
+import { depleteBatteryDueToShock } from "./batteryDepletion"
 
 export default function deliverShockTreatment(state, dispatch, currentHeartRate) {
   const { shockEnergy, shocksPerEpisode } = state
@@ -30,6 +31,7 @@ export default function deliverShockTreatment(state, dispatch, currentHeartRate)
 
   const attemptShockTreatment = (shockValue, episode) => {
     for (let i = 1; i <= shocksPerEpisode; i++) {
+      depleteBatteryDueToShock(state.batteryLevel, dispatch, shockValue)
       const probability = calculateAutomaticShockProbability(
         currentHeartRate,
         200, // TODO: need to change later, the constant value of detection rate

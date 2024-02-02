@@ -6,23 +6,31 @@ The following is a simulation of the data manipulation attack on an ICD.
 
 [https://dma-in-icd.netlify.app/](https://dma-in-icd.netlify.app/).
 
-## Basic Heart Rate attack
+## Tachycardia detection - Rhythm ID algorithm
+
+TODO here
+
+## Basic Parameters Working and Attack
+
+### Basic Heart Rate attack
 
 The minimum heart rate supported is set to 30 (constant) value. If the parameter is set to less than 30 and the current heart rate recorded is less than 30, we report heart failure.
 
-## Upper Heart Rate attack
+### Upper Heart Rate attack
 
 The upper heart rate is set to 220 (constant) value. If the parameter is set to more than 220 and the current heart rate recorded is more than 220, we report heart failure.
 
 **Note**: The device is programmed to perform the upper heart rate check only between 8 and 20 hours. If the current time is not between 8 and 20 hours, the upper heart rate check is not performed.
 
-## Night Heart Rate attack
+### Night Heart Rate attack
 
 The night heart rate should lie between 50 and 120. If the parameter is set to less than 50 and the current heart rate recorded is less than 50, we report heart failure. If the parameter is set to more than 120 and the current heart rate recorded is more than 120, we report heart failure.
 
 **Note**: The device is programmed to perform the night heart rate check only between 0 and 4 hours. If the current time is not between 0 and 4 hours, the night heart rate check is not performed.
 
-## Battery Depletion
+### Battery Depletion
+
+#### Depletion due to pacing pulses (Atrial, Left Ventricular, Right Ventricular)
 
 The battery depletion in the device is calculated based on the energy consumption during the delivery of shocks and pacing pulses. The code simulates the gradual reduction in battery level over time, taking into account the energy used for each pulse delivered.
 
@@ -41,11 +49,32 @@ where:
 
 The above depletions are calculated for each pacing pulse and shock delivered. The total battery depletion is calculated by summing up the depletions for each pacing pulse and shock delivered. The total battery depletion is then subtracted from the initial battery level to get the current battery level.
 
-## Shocking mechanism
+#### Depletion due to shock therapies
+
+**Implementation:** The battery depletion due to shock therapies is calculated as below:
+
+```javascript
+newBatteryLevel = Mathf.max(oldBatteryLevel - depletion, 0)
+```
+
+where:
+
+- `oldBatteryLevel` is the battery level before the shock therapy
+- `depletion` is the amount of battery depletion due to the shock therapy which is calculated as:
+
+  ```javascript
+  depletion = 0.1 * shockEnergyValue
+  ```
+
+  where:
+
+  - `shockEnergyValue` is the energy of the shock therapy
+
+### Shocking mechanism
 
 Shocks are delivered whenever an arrhythmia is detected. When the mode is set to “Therapy On” (more about it in the next bullet point), tachycardia is detected and shock is delivered automatically. If the tachycardia detection is disabled, the programmer has to deliver the shock manually to cure tachycardia. Two possible shock deliveries are automatic and manual.
 
-### Automatic Shock Delivery
+#### Automatic Shock Delivery
 
 Automatic shock delivery doesn’t rely on the programmer’s availability to deliver the manual shock. This therapy depends on the first (`dose-v1`), second (`dose-v2`), and subsequent (`dose-vn`) shock energies. Every shock dose involves sending shocks a certain number of times, denoted with “Shocks per episode (`valuesh`)”. Shock per episode is the maximum number of shock doses delivered per episode.
 
@@ -69,7 +98,7 @@ In the first step, shock doses of `dose-v1` are provided. If the appropriate the
 3. We generate a random number between 0 and 1. If the random number is less than the probability of success, we report success, otherwise we repeat the process for the remaining iterations of the shock dose or the remaining shock doses.
 4. If all the shock doses are unsuccessful, we report heart failure.
 
-### Manual Shock Delivery
+#### Manual Shock Delivery
 
 Manual shock delivery relies on the programmer’s availability to deliver the shock.
 
@@ -115,26 +144,37 @@ Manual shock delivery relies on the programmer’s availability to deliver the s
 4. We generate a random number between 0 and 1. If the random number is less than the probability of success, we report success, otherwise we report failure. If the shock delivery is successful, the tachycardia episode is considered to be treated successfully. If the failures are more than the maximum number of shocks per episode, we report heart failure.
 5. If the programmer doesn't deliver the shock within the timeout, we report heart failure.
 
-## Mode
+#### Rescue Shock
 
-### Shelf Mode
+The rescue shock is delivered if the tachycardia detection is disabled for a certain timeout of a programmable value, that’s nominally set to 6 hours because the ICD is in the MRI protection mode. Starting rescue shock terminates the MRI Protection Mode and the tachycardia detection is enabled.
+
+**Implementation:** The rescue shock is delivered in the following way:
+
+1. To start rescue shock, we give the command: `START RSHK`. The ICD then starts charging the ICD to deliver the shock. The ICD then delivers the shock to the patient.
+2. The shock delivery is done in the same way as the manual shock delivery, with the same probability of success and failure.
+3. If the rescue shock is successful, the tachycardia episode is considered to be treated successfully. If the rescue shock is unsuccessful, we report heart failure.
+4. If rescue shock is started, the ICD exits the MRI Protection Mode and the tachycardia detection is enabled.
+
+### Mode
+
+#### Shelf Mode
 
 In shelf mode, the battery consumption is constant due to the battery's standby leakage. This is a one-time-only mode, and when this is set to use by the programmer, it can’t be reverted to this mode.
 
 **Implementation:** at the beginning of the simulation, the ICD is set to be in this mode by default. Once the “Start Simulation” button is pressed, there is no going back to the Shelf Mode. Constant battery depletion starts as soon as the site loads.
 
-### Therapy Off Mode
+#### Therapy Off Mode
 
 This mode is by default set when the “Start Simulation” button is pressed for the first time.
 Tachycardia detection: **OFF**.
 
 **Implementation:** when this is set to **OFF**, the **Rhythm ID** algorithm still runs. If the algorithm decides that therapy is required, ICD doesn’t deliver shock automatically, instead, manual shock therapy is administered if the medical programmer has been alerted about the detected tachyarrhythmia. More about the shock delivery methods are talked about in detail in the **Shock Delivery** section.
 
-### Therapy On Mode
+#### Therapy On Mode
 
 This is the usual mode of the ICD, which detects tachyarrhythmias and responds by delivering appropriate shock treatment.
 
-### MRI Protection Mode
+#### MRI Protection Mode
 
 Tachycardia detection is disabled, beeper is disabled. Following are the methods to exit this mode:
 

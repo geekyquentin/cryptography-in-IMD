@@ -3,7 +3,7 @@ import { UPDATE_IS_FAILED } from "../data/actionTypes"
 import { toast } from "react-toastify"
 import { toastOptions } from "../data"
 
-export default function simulateBattery(beeperControl, batteryLevel, dispatch) {
+const simulateBattery = (beeperControl, batteryLevel, dispatch) => {
   if (batteryLevel <= 20 && beeperControl) {
     toast.error("Battery is low", toastOptions)
   }
@@ -17,3 +17,11 @@ export default function simulateBattery(beeperControl, batteryLevel, dispatch) {
     })
   }
 }
+
+const depleteBatteryDueToShock = (batteryLevel, dispatch, shockEnergyValue) => {
+  const depletion = 0.1 * shockEnergyValue
+  const newBatteryLevel = Math.max(batteryLevel - depletion, 0)
+  dispatch({ type: "UPDATE_BATTERY_LEVEL", payload: newBatteryLevel })
+}
+
+export { simulateBattery, depleteBatteryDueToShock }
