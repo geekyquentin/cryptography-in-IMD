@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback, useRef } from "react"
 import { useStateContext } from "../../StateContext"
 import { STOP_MANUAL_SHOCK, UPDATE_IS_FAILED } from "../../data/actionTypes"
+import { defaultParams } from "../../data/"
+
 import { toast } from "react-toastify"
 import { toastOptions } from "../../data"
 
@@ -12,13 +14,29 @@ const calculateProbability = (
   shocksGiven
 ) => {
   const baseProbability = 0.8
-  const heartRateDifference = Math.abs(currentHeartRate - manualShockEnergy)
-  const shockPenalty = 0.001 * heartRateDifference
-  const shocksPenalty = 0.002 * shocksGiven
+  const thresholdShockEnergy = calculateThresholdShockEnergy(currentHeartRate)
+  const shockEnergyDeviation = manualShockEnergy - thresholdShockEnergy
 
-  let probability = baseProbability - shockPenalty - shocksPenalty
+  const shocksPenalty = 0.002 * shocksGiven
+  const deviationPenalty = 0.001 * Math.abs(shockEnergyDeviation)
+
+  let probability = baseProbability + shocksPenalty - deviationPenalty
 
   return Math.min(Math.max(probability, 0), 1)
+}
+
+const calculateThresholdShockEnergy = (currentHeartRate) => {
+  const baseThreshold = 30
+  const heartRateMultiplier = 0.5
+
+  const { min, max } = defaultParams.shockDose
+
+  let thresholdShockEnergy =
+    baseThreshold + heartRateMultiplier * currentHeartRate
+
+  thresholdShockEnergy = Math.max(min, Math.min(max, thresholdShockEnergy))
+
+  return thresholdShockEnergy
 }
 
 const ManualShock = () => {

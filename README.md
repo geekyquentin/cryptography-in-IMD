@@ -1,5 +1,11 @@
 # Data Manipulation Attack Simulation
 
+The following is a simulation of the data manipulation attack on an ICD.
+
+## Demo
+
+[https://dma-in-icd.netlify.app/](https://dma-in-icd.netlify.app/).
+
 ## Basic Heart Rate attack
 
 The minimum heart rate supported is set to 30 (constant) value. If the parameter is set to less than 30 and the current heart rate recorded is less than 30, we report heart failure.
@@ -69,7 +75,45 @@ Manual shock delivery relies on the programmer’s availability to deliver the s
 
 **Implementation:** When the ICD detects tachycardia, it alerts the programmer about the detected tachycardia. The programmer can then deliver the shock manually. The shock delivery is done in the following way:
 
-1. Implementation details are yet to be decided.
+1. Whenever tachycardia is detected by the Rhythm ID algorithm, the ICD alerts the programmer about the detected tachycardia.
+2. After the programmer is alerted, the timeout for the programmer to deliver the shock starts. If the programmer delivers the shock within the timeout, the shock is delivered successfully. If the programmer doesn’t deliver the shock within the timeout, we report heart failure.
+3. To determine if the shock deivery is successful, we calculate the probability of success as:
+
+   ```javascript
+   prob = baseProbability + shocksPenalty - deviationPenalty
+   ```
+
+   where:
+
+   - `baseProbability` is the base probability of success, which is set to 0.8
+   - `shocksPenalty` is the penalty for the number of shocks already given, which is set to 0.002 \* `shocksGiven`
+   - `deviationPenalty` is the penalty for the deviation of the shock value from the recommended shock value, which is set to 0.001 \* `deviation`
+   - `shocksGiven` is the number of shocks already given for the current tachycardia episode, which should be less than or equal to the maximum number of shocks per episode
+   - `deviation` is the deviation of the shock value from the recommended shock value which is calculated as:
+
+     ```javascript
+     deviation = manualShockEnergy - thresholdShockEnergy
+     ```
+
+     where:
+
+     - `manualShockEnergy` is the energy of the shock delivered by the programmer
+     - `thresholdShockEnergy` is the recommended energy of the shock which is again calculated as:
+
+       ```javascript
+       thresholdShockEnergy =
+         baseThreshold + heartRateMultiplier * currentHeartRate
+       ```
+
+       where:
+
+       - `baseThreshold` is the base threshold energy for the shock, which is set to 30
+       - `heartRateMultiplier` is the multiplier for the current heart rate, which is set to 0.5
+
+       The threshold shock energy is clamped between 10 and 80.
+
+4. We generate a random number between 0 and 1. If the random number is less than the probability of success, we report success, otherwise we report failure. If the shock delivery is successful, the tachycardia episode is considered to be treated successfully. If the failures are more than the maximum number of shocks per episode, we report heart failure.
+5. If the programmer doesn't deliver the shock within the timeout, we report heart failure.
 
 ## Mode
 
