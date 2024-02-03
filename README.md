@@ -8,6 +8,8 @@ The following is a simulation of the data manipulation attack on an ICD.
 
 ## Tachycardia detection - Rhythm ID algorithm
 
+Refer to the paper: [Synthesizing stealthy reprogramming attacks on cardiac devices](https://dl.acm.org/doi/10.1145/3302509.3311044).
+
 ## Basic Parameters Working and Attack
 
 ### Basic Heart Rate attack
@@ -80,7 +82,7 @@ In the first step, shock doses of `dose-v1` are provided. If the appropriate the
 
 **Implementation:** Whenever the ICD detects tachycardia, it delivers the shock automatically. The shock delivery is done in the following way:
 
-1. The code checks the shock values (`dose-v1`, `dose-v2`, `dose-vn`) for acceptable ranges and attempts shock treatment sequentially. If any shock tretment is unsuccessful, it reports heart failure.
+1. The code checks the shock values (`dose-v1`, `dose-v2`, `dose-vn`) for acceptable ranges and attempts shock treatment sequentially. If any shock treatment is unsuccessful, it reports heart failure.
 2. For each episode in attempting shock treatment, we decide the outcome of the shock treatment probabilistically. For the shock dose `shockValue`, episode `episode`, and the current iteration of the shock dose `i`, we calculate the probability of success as:
 
    ```javascript
@@ -104,7 +106,7 @@ Manual shock delivery relies on the programmer’s availability to deliver the s
 
 1. Whenever tachycardia is detected by the Rhythm ID algorithm, the ICD alerts the programmer about the detected tachycardia.
 2. After the programmer is alerted, the timeout for the programmer to deliver the shock starts. If the programmer delivers the shock within the timeout, the shock is delivered successfully. If the programmer doesn’t deliver the shock within the timeout, we report heart failure.
-3. To determine if the shock deivery is successful, we calculate the probability of success as:
+3. To determine if the shock delivery is successful, we calculate the probability of success as:
 
    ```javascript
    prob = baseProbability + shocksPenalty - deviationPenalty
