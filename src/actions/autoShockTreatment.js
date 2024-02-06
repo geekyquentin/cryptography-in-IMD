@@ -1,10 +1,12 @@
-import { START_MANUAL_SHOCK, UPDATE_IS_FAILED } from "../data/actionTypes"
+import { START_MANUAL_SHOCK, UPDATE_IS_FAILED, UPDATE_THERAPY_ON } from "../data/actionTypes"
 
 import { toast } from "react-toastify"
 import { toastOptions, defaultParams } from "../data"
 import { depleteBatteryDueToShock } from "./batteryDepletion"
 
 export default function deliverShockTreatment(state, dispatch, currentHeartRate) {
+  dispatch({ type: UPDATE_THERAPY_ON, payload: true })
+
   const { shockEnergy, shocksPerEpisode } = state
   const { first, second, nth } = shockEnergy
 

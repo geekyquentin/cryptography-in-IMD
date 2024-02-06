@@ -139,7 +139,7 @@ const ManualShock = () => {
 
   return (
     <button
-      className="btn-secondary-sm"
+      className="btn-secondary-sm btn-circular"
       onClick={handleManualShock}
       disabled={isManualButtonDisabled || !manualShockStart}
     >

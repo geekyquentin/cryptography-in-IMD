@@ -8,10 +8,12 @@ const StateContext = createContext()
 
 const initialState = {
   isRunning: false,
+  therapyOn: false,
   isFailed: false,
   dialogHeader: "",
   dialogDescription: "",
   manualShockStart: false,
+  rescueShockStart: false,
 
   currentHeartRate: 0,
 
@@ -42,7 +44,6 @@ const initialState = {
   mriSwitchTimeout: 0,
   modeSwitchTimerID: null,
   beeperControl: true,
-  rescueShockStart: false,
   rescueShockEnergy: defaultParams.shockDose.max,
   manualShockEnergy: 0,
   pulseAmp: {

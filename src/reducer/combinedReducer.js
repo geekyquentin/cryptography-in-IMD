@@ -11,12 +11,14 @@ const combinedReducer = (state, action) => {
       const { dialogHeader, dialogDescription } = action.payload
       return { ...state, isFailed: true, isRunning: false, dialogHeader, dialogDescription }
     }
+    case actionTypes.UPDATE_THERAPY_ON:
+      return { ...state, therapyOn: action.payload }
     case actionTypes.START_MANUAL_SHOCK:
-      return { ...state, manualShockStart: true, currentHeartRate: action.payload }
+      return { ...state, manualShockStart: true, therapyOn: true, rescueShockStart: false, currentHeartRate: action.payload }
     case actionTypes.STOP_MANUAL_SHOCK:
-      return { ...state, manualShockStart: false }
+      return { ...state, manualShockStart: false, therapyOn: false }
     case actionTypes.START_RESCUE_SHOCK:
-      return { ...state, rescueShockStart: true, therapyMode: defaultMode }
+      return { ...state, rescueShockStart: true, manualShockStart: false, therapyMode: defaultMode }
     case actionTypes.STOP_RESCUE_SHOCK:
       return { ...state, rescueShockStart: false }
     case actionTypes.RESTART_WORKFLOW:

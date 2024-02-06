@@ -1,13 +1,10 @@
-import { useEffect, useState, useCallback, useRef } from "react"
+import { useState, useCallback } from "react"
 import { useStateContext } from "../../StateContext"
-import { STOP_MANUAL_SHOCK, UPDATE_IS_FAILED } from "../../data/actionTypes"
+import { STOP_RESCUE_SHOCK, UPDATE_IS_FAILED } from "../../data/actionTypes"
 import { defaultParams } from "../../data/"
-
 import { toast } from "react-toastify"
 import { toastOptions } from "../../data"
 import { depleteBatteryDueToShock } from "../../actions"
-
-const MANUAL_SHOCK_TIMEOUT = 5000
 
 const calculateProbability = (
   currentHeartRate,
@@ -42,109 +39,64 @@ const calculateThresholdShockEnergy = (currentHeartRate) => {
 
 const RescueShock = () => {
   const { state, dispatch } = useStateContext()
-  const [isManualButtonDisabled, setIsManualButtonDisabled] = useState(false)
-  const [shocksGiven, setShocksGiven] = useState(0)
-  const timeoutRef = useRef(null)
+  const [isCharging, setIsCharging] = useState(false)
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false)
 
   const {
-    manualShockStart,
+    rescueShockStart,
+    therapyOn,
     currentHeartRate,
-    manualShockEnergy,
-    shocksPerEpisode,
+    rescueShockEnergy,
     batteryLevel,
   } = state
 
-  const handleManualShock = useCallback(() => {
-    setIsManualButtonDisabled(true)
-    depleteBatteryDueToShock(batteryLevel, dispatch, manualShockEnergy)
+  const handleShock = useCallback(() => {
+    setIsCharging(true)
+    setIsButtonDisabled(true)
+    depleteBatteryDueToShock(batteryLevel, dispatch, rescueShockEnergy)
 
-    const probability = calculateProbability(
-      currentHeartRate,
-      manualShockEnergy,
-      shocksGiven
-    )
-    const manualShockSuccess = Math.random() <= probability
-    console.log(Math.random(), probability, manualShockSuccess)
+    setTimeout(() => {
+      const probability = calculateProbability(
+        currentHeartRate,
+        rescueShockEnergy,
+        defaultParams.shockDose.max
+      )
+      const shockSuccess = Math.random() <= probability
+      console.log(Math.random(), probability, shockSuccess)
 
-    if (manualShockSuccess) {
-      dispatch({ type: STOP_MANUAL_SHOCK })
-      toast.success("Manual shock successful!", toastOptions)
-      setShocksGiven(0)
-
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-    } else {
-      if (shocksGiven >= shocksPerEpisode) {
+      if (shockSuccess) {
+        // dispatch({ type: STOP_RESCUE_SHOCK })
+        toast.success("Rescue shock successful!", toastOptions)
+      } else {
         dispatch({
           type: UPDATE_IS_FAILED,
           payload: {
-            dialogHeader: "Manual shock failed",
-            dialogDescription: "Patient did not respond to manual shock.",
+            dialogHeader: "Rescue shock failed",
+            dialogDescription: "Patient did not respond to the shock.",
           },
         })
-      } else {
-        setShocksGiven(shocksGiven + 1)
-        dispatch({ type: STOP_MANUAL_SHOCK, payload: currentHeartRate })
-        toast.warning("Deliver another shock", toastOptions)
-
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current)
-        }
-        timeoutRef.current = setTimeout(() => {
-          dispatch({
-            type: UPDATE_IS_FAILED,
-            payload: {
-              dialogHeader: "Manual shock failed",
-              dialogDescription: "Shock was not delivered in time.",
-            },
-          })
-        }, MANUAL_SHOCK_TIMEOUT)
       }
-    }
 
-    setTimeout(() => {
-      setIsManualButtonDisabled(false)
-    }, 1000)
-  }, [
-    currentHeartRate,
-    dispatch,
-    manualShockEnergy,
-    shocksGiven,
-    shocksPerEpisode,
-    batteryLevel,
-  ])
-
-  useEffect(() => {
-    if (manualShockStart) {
-      timeoutRef.current = setTimeout(
-        () =>
-          dispatch({
-            type: UPDATE_IS_FAILED,
-            payload: {
-              dialogHeader: "Manual shock failed",
-              dialogDescription: "Shock was not delivered in time.",
-            },
-          }),
-        MANUAL_SHOCK_TIMEOUT
-      )
-
-      return () => {
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current)
-        }
-      }
-    }
-  }, [manualShockStart, dispatch])
+      setIsCharging(false)
+      setIsButtonDisabled(false)
+    }, defaultParams.rescueShockChargingTime * 1000)
+  }, [currentHeartRate, dispatch, rescueShockEnergy, batteryLevel])
 
   return (
-    <button
-      className="btn-secondary-sm"
-      onClick={handleManualShock}
-      disabled={isManualButtonDisabled || !manualShockStart}
-    >
-      Shock
-    </button>
+    <div>
+      <button
+        className="btn-secondary-sm btn-circular"
+        onClick={handleShock}
+        disabled={
+          isButtonDisabled ||
+          isCharging ||
+          !rescueShockStart ||
+          (therapyOn && !rescueShockStart)
+        }
+      >
+        {isCharging ? "Charging..." : "Start Rescue Shock"}
+      </button>
+    </div>
   )
 }
 

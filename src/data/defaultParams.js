@@ -41,6 +41,7 @@ const defaultParams = {
   mriTimeout: [6, 9, 12, 24],
   maxBatteryLevel: 100,
   defaultDepletionRate: 0.1,
+  rescueShockChargingTime: 5
 }
 
 export default defaultParams

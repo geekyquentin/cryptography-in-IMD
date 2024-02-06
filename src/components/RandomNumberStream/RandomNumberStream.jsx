@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useStateContext } from "../../StateContext"
-import { ManualShock } from ".."
+import { ManualShock, RescueShock } from ".."
 import { defaultParams } from "../../data"
 import { simulateICD } from "../../actions"
 
@@ -83,6 +83,7 @@ export default function RandomNumberStream() {
           onChange={(e) => setIntervalTime(e.target.value)}
         />
         <ManualShock />
+        <RescueShock />
       </div>
       <div className="number-stream">
         {stream.map((item) => (
