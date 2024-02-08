@@ -14,19 +14,19 @@ Refer to the paper: [Synthesizing stealthy reprogramming attacks on cardiac devi
 
 ### Basic Heart Rate attack
 
-The minimum heart rate supported is set to 30 (constant) value. If the parameter is set to less than 30 and the current heart rate recorded is less than 30, we report heart failure.
+The minimum heart rate supported is set to 30 (constant) value. If the parameter is set to less than 30 and the current heart rate recorded is less than 30, we report heart failure[^1].
 
 ### Upper Heart Rate attack
 
-The upper heart rate is set to 220 (constant) value. If the parameter is set to more than 220 and the current heart rate recorded is more than 220, we report heart failure.
+The upper heart rate is set to 220 (constant) value. If the parameter is set to more than 220 and the current heart rate recorded is more than 220, we report heart failure[^1].
 
-**Note**: The device is programmed to perform the upper heart rate check only between 8 and 20 hours. If the current time is not between 8 and 20 hours, the upper heart rate check is not performed.
+**Note**: The device is programmed to perform the upper heart rate check only between 8 and 20 hours. If the current time is not between 8 and 20 hours, the upper heart rate check is not performed[^1].
 
 ### Night Heart Rate attack
 
-The night heart rate should lie between 50 and 120. If the parameter is set to less than 50 and the current heart rate recorded is less than 50, we report heart failure. If the parameter is set to more than 120 and the current heart rate recorded is more than 120, we report heart failure.
+The night heart rate should lie between 50 and 120. If the parameter is set to less than 50 and the current heart rate recorded is less than 50, we report heart failure. If the parameter is set to more than 120 and the current heart rate recorded is more than 120, we report heart failure[^1].
 
-**Note**: The device is programmed to perform the night heart rate check only between 0 and 4 hours. If the current time is not between 0 and 4 hours, the night heart rate check is not performed.
+**Note**: The device is programmed to perform the night heart rate check only between 0 and 4 hours. If the current time is not between 0 and 4 hours, the night heart rate check is not performed[^1].
 
 ### Battery Depletion
 
@@ -76,9 +76,9 @@ Shocks are delivered whenever an arrhythmia is detected. When the mode is set to
 
 #### Automatic Shock Delivery
 
-Automatic shock delivery doesn’t rely on the programmer’s availability to deliver the manual shock. This therapy depends on the first (`dose-v1`), second (`dose-v2`), and subsequent (`dose-vn`) shock energies. Every shock dose involves sending shocks a certain number of times, denoted with “Shocks per episode (`valuesh`)”. Shock per episode is the maximum number of shock doses delivered per episode.
+Automatic shock delivery doesn’t rely on the programmer’s availability to deliver the manual shock. This therapy depends on the first (`dose-v1`), second (`dose-v2`), and subsequent (`dose-vn`) shock energies. Every shock dose involves sending shocks a certain number of times, denoted with “Shocks per episode (`valuesh`)”. Shock per episode is the maximum number of shock doses delivered per episode[^2].
 
-In the first step, shock doses of `dose-v1` are provided. If the appropriate therapy is not delivered, shock doses of `dose-v2` are given. If this still fails, shock doses of energy `dose-vn` are given. If this fails too, then we report heart failure. Each of the above doses is given `valuesh` times.
+In the first step, shock doses of `dose-v1` are provided. If the appropriate therapy is not delivered, shock doses of `dose-v2` are given. If this still fails, shock doses of energy `dose-vn` are given. If this fails too, then we report heart failure. Each of the above doses is given `valuesh` times[^2].
 
 **Implementation:** Whenever the ICD detects tachycardia, it delivers the shock automatically. The shock delivery is done in the following way:
 
@@ -146,7 +146,7 @@ Manual shock delivery relies on the programmer’s availability to deliver the s
 
 #### Rescue Shock
 
-The rescue shock is delivered if the tachycardia detection is disabled for a certain timeout of a programmable value, that’s nominally set to 6 hours because the ICD is in the MRI protection mode. Starting rescue shock terminates the MRI Protection Mode and the tachycardia detection is enabled.
+The rescue shock is delivered if the tachycardia detection is disabled for a certain timeout of a programmable value, that’s nominally set to 6 hours because the ICD is in the MRI protection mode. Starting rescue shock terminates the MRI Protection Mode and the tachycardia detection is enabled[^3].
 
 **Implementation:** The rescue shock is delivered in the following way:
 
@@ -159,20 +159,20 @@ The rescue shock is delivered if the tachycardia detection is disabled for a cer
 
 #### Shelf Mode
 
-In shelf mode, the battery consumption is constant due to the battery's standby leakage. This is a one-time-only mode, and when this is set to use by the programmer, it can’t be reverted to this mode.
+In shelf mode, the battery consumption is constant due to the battery's standby leakage. This is a one-time-only mode, and when this is set to use by the programmer, it can’t be reverted to this mode[^3].
 
-**Implementation:** at the beginning of the simulation, the ICD is set to be in this mode by default. Once the “Start Simulation” button is pressed, there is no going back to the Shelf Mode. Constant battery depletion starts as soon as the site loads.
+**Implementation:** at the beginning of the simulation, the ICD is set to be in this mode by default. Once the “Start Simulation” button is pressed, there is no going back to the Shelf Mode. Constant battery depletion starts as soon as the site loads[^3].
 
 #### Therapy Off Mode
 
 This mode is by default set when the “Start Simulation” button is pressed for the first time.
-Tachycardia detection: **OFF**.
+Tachycardia detection: **OFF**[^3].
 
-**Implementation:** when this is set to **OFF**, the **Rhythm ID** algorithm still runs. If the algorithm decides that therapy is required, ICD doesn’t deliver shock automatically, instead, manual shock therapy is administered if the medical programmer has been alerted about the detected tachyarrhythmia. More about the shock delivery methods are talked about in detail in the **Shock Delivery** section.
+**Implementation:** when this is set to **OFF**, the **Rhythm ID** algorithm still runs. If the algorithm decides that therapy is required, ICD doesn’t deliver shock automatically, instead, manual shock therapy is administered if the medical programmer has been alerted about the detected tachyarrhythmia. More about the shock delivery methods are talked about in detail in the **Shock Delivery** section[^3].
 
 #### Therapy On Mode
 
-This is the usual mode of the ICD, which detects tachyarrhythmias and responds by delivering appropriate shock treatment.
+This is the usual mode of the ICD, which detects tachyarrhythmias and responds by delivering appropriate shock treatment[^3].
 
 #### MRI Protection Mode
 
@@ -182,4 +182,8 @@ Tachycardia detection is disabled, beeper is disabled. Following are the methods
 2. reverted after a certain timeout of a programmable value, that’s nominally set to 6 hours
 3. deliver a rescue shock
 
-Once exited, the beeper needs to be separately enabled as it doesn’t return to the previous settings.
+Once exited, the beeper needs to be separately enabled as it doesn’t return to the previous settings[^3].
+
+[^1]: Medtronic Cobalt XT Manual
+[^2]: [Unmasking the Dominant Threat of Data Manipulation Attack on Implantable Cardioverter Defibrillators](https://doi.ieeecomputersociety.org/10.1109/PST58708.2023.10320186)
+[^3]: Boston Scientific Emblem S-ICD Programmer Manual
