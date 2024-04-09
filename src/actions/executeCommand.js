@@ -137,7 +137,7 @@ export default function executeCommand(state, dispatch, command) {
         }
 
         case "PA":
-          if (value < pacingThresholdSetup) {
+          if (Number(value) < pacingThresholdSetup) {
             toast.error("Pacing amplitude must be greater than " + pacingThresholdSetup, toastOptions)
             return
           }
@@ -147,7 +147,7 @@ export default function executeCommand(state, dispatch, command) {
           break
 
         case "LVA":
-          if (value < pacingThresholdSetup) {
+          if (Number(value) < pacingThresholdSetup) {
             toast.error("Pacing amplitude must be greater than " + pacingThresholdSetup, toastOptions)
             return
           }
@@ -157,7 +157,7 @@ export default function executeCommand(state, dispatch, command) {
           break
 
         case "RVA":
-          if (value < pacingThresholdSetup) {
+          if (Number(value) < pacingThresholdSetup) {
             toast.error("Pacing amplitude must be greater than " + pacingThresholdSetup, toastOptions)
             return
           }

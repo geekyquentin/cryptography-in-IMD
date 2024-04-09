@@ -187,3 +187,8 @@ Once exited, the beeper needs to be separately enabled as it doesn’t return to
 [^1]: Medtronic Cobalt XT Manual
 [^2]: [Unmasking the Dominant Threat of Data Manipulation Attack on Implantable Cardioverter Defibrillators](https://doi.ieeecomputersociety.org/10.1109/PST58708.2023.10320186)
 [^3]: Boston Scientific Emblem S-ICD Programmer Manual
+
+## Other tasks
+
+- Survey how to communicate with the ICD
+- Understand properties such as protocol, and everything.

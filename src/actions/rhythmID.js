@@ -7,6 +7,8 @@ export default function rhythmID(state, dispatch, heartRates, vRate, aRate) {
   const { vt1, vf } = state.ventricularRates
   const currentHeartRate = heartRates[heartRates.length - 1]
 
+  deliverShockTreatment(state, dispatch, currentHeartRate)
+
   if (D1(vf, heartRates)) {
     if (D2(vf, heartRates)) {
       deliverShockTreatment(state, dispatch, currentHeartRate)
